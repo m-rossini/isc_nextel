@@ -1,0 +1,166 @@
+<project xmlns:j="jelly:maven"
+         xmlns:ant="jelly:ant"
+         xmlns:artifact="artifact">  
+
+  <goal name="isc:lock" prereqs="isc:prepare">
+    <j:forEach var="dep" items="${pom.dependencies}">
+    	<ant:property name="${dep.groupId}.${dep.artifactId}"
+    	              value="${maven.repo.local}/${dep.groupId}/${dep.type}s/${dep.artifact}"/>
+    </j:forEach>
+    <ant:property name="maven.build.dir" value="${maven.build.dir}"/>
+    <ant:ant dir="${basedir}" antfile="maven-ant-ext.xml" target="lock"/>
+  </goal>
+  
+  <goal name="isc:lock-devel" prereqs="isc:prepare">
+    <j:forEach var="dep" items="${pom.dependencies}">
+      <ant:property name="${dep.groupId}.${dep.artifactId}"
+                    value="${maven.repo.local}/${dep.groupId}/${dep.type}s/${dep.artifact}"/>
+    </j:forEach>
+    <ant:property name="maven.build.dir" value="${maven.build.dir}"/>
+    <ant:ant dir="${basedir}" antfile="maven-ant-ext.xml" target="lock-devel"/>
+  </goal>
+
+  <goal name="isc:prepare">
+    <ant:mkdir dir="${maven.build.dir}"/>
+    <ant:mkdir dir="${maven.build.dir}/bin"/>
+    <ant:mkdir dir="${maven.build.dir}/conf"/>
+    <ant:mkdir dir="${maven.build.dir}/licenses"/>
+    <ant:mkdir dir="${maven.build.resources.dir}"/>
+  </goal>
+
+  <goal name="isc:dist">
+    <ant:delete file="${maven.build.dir}/${pom.artifactId}-${pom.currentVersion}.zip"/>
+       
+    <ant:copy todir="${maven.build.dir}/bin">
+      <fileset dir="${basedir}/bin">
+        <include name="README.txt"/>
+        <include name="run-isc.*"/>
+        <include name="prepare-isc.*"/>
+        <include name="fix-directories-isc.*"/>
+        <include name="encrypt.sh"/>
+        <include name="decrypt.sh"/>
+        <include name="build-key.sh"/>
+        <include name="crypt.xml"/>
+      </fileset>
+      <filterchain>
+        <tokenfilter>
+          <filetokenizer/>
+          <deletecharacters chars="\r"/>
+        </tokenfilter>
+      </filterchain>
+      <filterset begintoken="[%" endtoken="%]">
+        <filter token="VERSION" value="${pom.currentVersion}"/>
+      </filterset>
+    </ant:copy>
+    
+    <ant:copy todir="${maven.build.dir}/conf">
+      <fileset dir="${basedir}/conf">
+        <include name="all-config.xml"/>
+        <include name="xml-config.xml"/>
+        <include name="txt-config.xml"/>
+        <include name="pdf-config.xml"/>
+        <include name="feb-config.xml"/>
+        <include name="fcn-config.xml"/>
+        <include name="cg-config.xml"/>
+        <include name="gel/**"/>
+        <include name="pdf/**"/>
+        <include name="html/**"/>
+        <include name="timm/**"/>
+        <include name="xml/**"/>
+        <include name="txt/**"/>
+        <include name="flat/**"/>
+        <include name="febraban/**"/>
+        <include name="sql/bscs-statements.xml"/>
+        <include name="sql/mibas-statements.xml"/>
+        <include name="sql/pinet-statements.xml"/>
+        <include name="sql/checkpoint-statements.xml"/>
+        <include name="database.jocl"/>
+      </fileset>
+      <filterchain>
+        <tokenfilter>
+          <filetokenizer/>
+          <deletecharacters chars="\r"/>
+        </tokenfilter>
+      </filterchain>
+    </ant:copy>
+    
+    <ant:copy todir="${maven.build.dir}/conf" overwrite="true">
+      <fileset dir="${basedir}/conf">
+        <include name="**/*.gif"/>
+        <include name="**/*.jpg"/>
+      </fileset>
+    </ant:copy>
+    
+    <ant:copy todir="${maven.build.dir}/licenses">
+      <fileset dir="${basedir}/etc/licenses"/>
+      <filterchain>
+        <tokenfilter>
+          <filetokenizer/>
+          <deletecharacters chars="\r"/>
+        </tokenfilter>
+      </filterchain>
+    </ant:copy>
+    
+    <ant:zip destfile="${maven.build.dir}/${pom.artifactId}-${pom.currentVersion}.zip">
+      <zipfileset dir="${maven.build.dir}/bin" prefix="bin" 
+                  excludes="*.sh" filemode="644"/>
+      <zipfileset dir="${maven.build.dir}/bin" prefix="bin" 
+                  includes="*.sh" filemode="754"/>
+      <zipfileset dir="${maven.build.dir}/conf" prefix="conf"/>
+      <zipfileset dir="${maven.build.dir}/licenses" prefix="licenses"/>
+<!--  <zipfileset file="${basedir}/docs/Manual_Operacao.doc" prefix="docs"/>  -->
+      <j:forEach var="dep" items="${pom.dependencies}">
+        <j:choose>
+          <j:when test="${dep.artifactId.endsWith('EtherAddr')}">
+            <zipfileset file="${maven.repo.local}/${dep.groupId}/${dep.type}s/${dep.artifact}"
+                        fullpath="lib/${dep.artifactId}.${dep.type}"/>
+          </j:when>
+          <!-- bundling all dependency libs -->
+          <j:when test="${dep.getProperty('lib.bundle')=='true'}">
+            <zipfileset file="${maven.repo.local}/${dep.groupId}/${dep.type}s/${dep.artifact}" prefix="lib"/>
+          </j:when>
+          <!-- bundling all dependency endorsed libs -->
+          <j:when test="${dep.getProperty('lib.endorsed.bundle')=='true'}">
+            <zipfileset file="${maven.repo.local}/${dep.groupId}/${dep.type}s/${dep.artifact}" prefix="lib/endorsed"/>
+          </j:when>
+        </j:choose>
+      </j:forEach>
+      <zipfileset dir="${maven.build.dir}" includes="${maven.final.name}.jar" 
+                  fullpath="lib/auster-isc-${pom.currentVersion}.jar"/>
+      <zipfileset dir="${maven.build.dir}" includes="${maven.final.name}-custom.jar" 
+                  fullpath="lib/nextel-business-logic.jar"/>
+    </ant:zip>
+
+    <artifact:install
+      artifact="${maven.build.dir}/${maven.final.name}.jar"
+      type="jar"
+      project="${pom}"/>
+
+  </goal>
+
+<!-- 
+  <postGoal name="java:prepare-filesystem">
+  	<attainGoal name="isc:lock"/>
+  </postGoal>
+ -->
+  
+  <postGoal name="jar:jar">
+    <j:forEach var="dep" items="${pom.dependencies}">
+    	<ant:property name="${dep.groupId}.${dep.artifactId}"
+    	              value="${maven.repo.local}/${dep.groupId}/${dep.type}s/${dep.artifact}"/>
+    </j:forEach>
+    <ant:property name="maven.jar.name" value="${maven.build.dir}/${maven.final.name}.jar"/>
+    <ant:property name="maven.build.dir" value="${maven.build.dir}"/>
+    <ant:ant dir="${basedir}" antfile="proguard.xml" target="proguard"/>
+    <ant:jar destfile="${maven.build.dir}/${maven.final.name}.jar">
+      <zipfileset src="${maven.build.dir}/${maven.jar.temp.name}.jar"
+                  excludes="**/Encryptor.class"/>
+    </ant:jar>
+    <ant:delete file="${maven.build.dir}/${maven.jar.temp.name}.jar"/>
+    <ant:jar destfile="${maven.build.dir}/${maven.final.name}-custom.jar"
+             basedir="${maven.build.dest}" 
+             excludes="**/Bootstrap.class,**/BootstrapDevel.class,**/TIMMLoader.class"/>
+  </postGoal>
+
+</project>
+

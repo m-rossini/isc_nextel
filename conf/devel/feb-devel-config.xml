@@ -1,0 +1,177 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<data-aware>
+  <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+      <!-- <errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler"/> -->
+      <!-- <param name="Target" value="System.out"/> -->
+      <param name="Threshold" value="info" />
+      <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%t] %m%n" />
+      </layout>
+    </appender>
+    <appender name="FILE" class="biz.minaret.log4j.DatedFileAppender">
+      <param name="Threshold" value="info" />
+      <param name="Directory" value="log" />
+      <param name="Prefix" value="devel-" />
+      <param name="Suffix" value=".log" />
+      <param name="Append" value="true" />
+      <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%t] %m%n" />
+      </layout>
+    </appender>
+    <root>
+      <priority value="info" />
+      <appender-ref ref="FILE" />
+      <appender-ref ref="CONSOLE"/>
+    </root>
+    <category name="org.apache.fop">
+      <priority value="warn"/>
+    </category>
+  </log4j:configuration>
+
+  <management:configuration xmlns:management="http://www.auster.com.br/dware/management/">
+    <management:register use-default="false" class-name="br.com.auster.dware.monitor.RegisterMBeanMX4J"
+                         ip-address="localhost" tcp-port="9876" jndi-name="jmxconnector" />
+  </management:configuration>
+
+  <dw:configuration name="invoice" xmlns:dw="http://www.auster.com.br/dware/">
+
+    <dw:mbean mbean-component="dware" mbean-type="engine"
+              mbean-class-name="br.com.auster.dware.monitor.dware.JMXDWare" pass-reference="true" />
+
+    <dw:graph-manager>
+      <dw:mbean mbean-component="GraphManager"
+        mbean-class-name="br.com.auster.dware.monitor.manager.JMXGraphManager"
+        pass-reference="true" />
+
+      <dw:mbean mbean-component="graph"
+        mbean-class-name="br.com.auster.dware.monitor.graph.JMXGraph" pass-reference="true" />
+
+      <dw:local-graph-group name="local-1" graphs-per-processor="1" max-weight="-1">
+        <dw:mbean mbean-component="graph-group" mbean-type="local-1"
+          mbean-class-name="br.com.auster.dware.monitor.manager.JMXPriorityWishGraphGroup"
+          pass-reference="true" />
+      </dw:local-graph-group>
+
+      <dw:request-forwarder class-name="br.com.auster.dware.manager.PriorityQueueReqForwarder" />
+
+    </dw:graph-manager>
+
+    <dw:graph-design>
+
+      <dw:filter name="InputFromFile" class-name="br.com.auster.dware.filter.InputFromFile">
+        <config buffer-size="262244"/>
+        <dw:connect-to name="Invoice2XML" />
+      </dw:filter>
+
+      <dw:filter name="Invoice2XML" class-name="br.com.auster.dware.filter.XMLReaderFilter">
+        <dw:config/>
+        <dw:connect-to name="XMLSplitter" />
+      </dw:filter>
+
+      <dw:filter name="XMLSplitter" class-name="br.com.auster.dware.filter.XMLManagerFilter">
+        <dw:connect-to name="XML2Febraban"/>
+        <dw:connect-to name="XML2TxtBGH"/>
+        <dw:connect-to name="XML2NF"/>
+      </dw:filter>
+
+	  <dw:filter name="XML2Febraban" class-name="br.com.auster.dware.filter.XSLFilter">
+	    <dw:config>
+		  <dw:xsl-file path="conf/febraban/nextel_fatura.xsl" encrypted="false"/>
+		</dw:config>
+		<dw:connect-to name="FebrabanSerializer"/>
+	  </dw:filter>
+
+	  <dw:filter name="FebrabanSerializer" class-name="br.com.auster.dware.filter.XMLSerializerFilter">
+		<dw:config method="text" encoding="ISO-8859-1" indent="false"/>
+		<dw:connect-to name="Febraban2File" />
+	  </dw:filter>
+						
+      <dw:filter name="XML2TxtBGH" class-name="br.com.auster.dware.filter.XSLFilter">
+	    <dw:config>
+		  <dw:xsl-file path="conf/txt/nextel_fatura.xsl" encrypted="false"/>
+		</dw:config>
+	    <dw:connect-to name="TxtBGHSerializer"/>
+	  </dw:filter>
+
+	  <dw:filter name="TxtBGHSerializer" class-name="br.com.auster.dware.filter.XMLSerializerFilter">
+		<dw:config method="text" encoding="ISO-8859-1" indent="false"/>
+		  <dw:connect-to name="TxtBGH2File" />
+	  </dw:filter>
+			
+	  <dw:filter name="XML2NF" class-name="br.com.auster.dware.filter.XSLFilter">
+	    <dw:config>
+		  <dw:xsl-file path="conf/txt/nextel_fatura_NF.xsl" encrypted="false"/>
+		</dw:config>
+		<dw:connect-to name="NFSerializer"/>
+	  </dw:filter>
+
+	  <dw:filter name="NFSerializer" class-name="br.com.auster.dware.filter.XMLSerializerFilter">
+		<dw:config method="text" encoding="ISO-8859-1" indent="false"/>
+		<dw:connect-to name="NF2File" />
+	  </dw:filter>
+
+      <dw:filter name="Febraban2File" class-name="br.com.auster.dware.filter.OutputToFile">
+        <dw:config prefix="output/febraban/" suffix=".feb">
+          <dw:filename>
+            <dw:token align="right" width="2" fill-char="0">
+              <dw:insert-request-field name="cycle" />
+            </dw:token>
+            <dw:token>/CUST</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="account" />
+            </dw:token>
+          </dw:filename>
+        </dw:config>
+      </dw:filter>
+
+      <dw:filter name="TxtBGH2File" class-name="br.com.auster.dware.filter.OutputToFile">
+        <dw:config prefix="output/febraban/" suffix=".txtbgh">
+          <dw:filename>
+            <dw:token align="right" width="2" fill-char="0">
+              <dw:insert-request-field name="cycle" />
+            </dw:token>
+            <dw:token>/FEB</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="account" />
+            </dw:token>
+          </dw:filename>
+        </dw:config>
+      </dw:filter>
+      
+      <dw:filter name="NF2File" class-name="br.com.auster.dware.filter.OutputToFile">
+        <dw:config prefix="output/febraban/" suffix=".NF">
+          <dw:filename>
+            <dw:token align="right" width="2" fill-char="0">
+              <dw:insert-request-field name="cycle" />
+            </dw:token>
+            <dw:token>/FEB</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="account" />
+            </dw:token>
+          </dw:filename>
+        </dw:config>
+      </dw:filter>
+
+    </dw:graph-design>
+  </dw:configuration>
+
+  <requests:configuration xmlns:requests="http://www.auster.com.br/dware/requests/">
+    <builder-chain name="chain">
+      <builder name="builder" class-name="br.com.auster.dware.request.file.XMLFileRequestBuilder">
+        <config>
+          <request-key>
+            <field path="/INVOICE/CUSTOMER/@ID"/>
+          </request-key>
+          <request-attrs>
+            <attribute name="account"    path="/INVOICE/CUSTOMER/@ID"/>
+            <attribute name="custCode"   path="/INVOICE/CUSTOMER/@B"/>
+            <attribute name="costCenter" path="/INVOICE/CUSTOMER/@CID"/>
+            <attribute name="cycle"      path="/INVOICE/CUSTOMER/@BCN"/>
+          </request-attrs>
+        </config>
+      </builder>   
+    </builder-chain>
+  </requests:configuration> 
+                     
+</data-aware>

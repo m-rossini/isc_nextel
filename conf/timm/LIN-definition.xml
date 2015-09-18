@@ -1,0 +1,102 @@
+<element index="04" name="IDENTIFICATION" description="Item number identification">
+  <element separator=":">
+    <element name="ARTICLE" index="1" separator="."
+      description="Article number (see below). Empty for LIN-blocks describing costs for a contracts in itemized bills">
+      <attribute index="01" name="TMDES" description="short description of tariff" />
+      <attribute index="02" name="VSCODE" description="version number of tariff model" />
+      <attribute index="03" name="SPDES" description="short description of service package" />
+      <attribute index="04" name="SNDES" description="short description of service code" />
+      <attribute index="05" name="CHARGE_TYPE" description="charge type" />
+    </element>
+  </element>
+</element>
+
+    <!-- 
+    <sdd:key start-key="XCD" name="XCD" separator="+" skip="true"></sdd:key>
+    -->
+    
+    <sdd:key start-key="XCD" name="XCD" separator="+">
+      <attribute index="02" name="MAIN_NUMBER" description="running main number"/>
+      <attribute index="03" name="SUB_NUMBER" description="running sub number"/>
+      <element index="06" name="CR_TIME" show-text="true"
+               description="CR time stamp"> 
+        <attribute name="DATE" start="1" size="6"/>
+        <attribute name="TIME" start="7" size="6"/>
+      </element>
+      <attribute index="10" name="RATED_CALL_VOLUME_BEFORE" description="rated call volume before discounting/price plans"/>
+      <attribute index="11" name="RATED_CALL_VOLUME_AFTER" description="rated call volume after discounting/price plans"/>
+      <attribute index="12" name="ROUNDED_CALL_VOLUME_BEFORE" description="rounded call volume before discounting/price plans"/>
+      <attribute index="13" name="ROUNDED_CALL_VOLUME_AFTER" description="rounded call volume after discounting/price plans"/>
+      <attribute index="17" name="RATED_FLAT_AMOUNT" description="monetary amount: rated flat amount (cost of call before call discounting)"/>
+      <attribute index="20" name="RE_RATED_AMOUNT" description="monetary amount: re-rated amount (cost of call after call discounting)"/>
+      <attribute index="29" name="SERVICE_SHORT" description="service short description"/>
+      <attribute index="30" name="TARIFF_TIME_SHORT" description="tariff time short description"/>
+      <attribute index="31" name="TARIFF_ZONE_SHORT" description="tariff zone short description"/>
+      <attribute index="32" name="FREE_UNIT_SHORT" description="free unit of measurement package short description, filled if call was discounted with free units of measurement"/>
+      <attribute index="35" name="TYPE_INDICATOR" description="type indicator">
+        <type value="A" description="air"/>
+        <type value="I" description="interconnect (land)"/>
+        <type value="C" description="CF-leg"/>
+        <type value="R" description="roaming leg"/>
+      </attribute>
+      <attribute index="44" name="TYPE" description="type">
+        <type value="I" description="inbound"/>
+        <type value="O" description="outbound"/>
+        <type value="C" description="collect inbound"/>
+        <type value="D" description="Dialy Roaming Surcharge"/>
+        <type value="U" description="unknown"/>
+        <type value="F" description="RCF (roaming call forwarding)"/>
+      </attribute>
+      <attribute index="45" name="RATED_PARTY_TON" description="rated-party TON (Type of number)">
+        <type value="X" description="undefined"/>
+        <type value="0" description="unknown"/>
+        <type value="1" description="international"/>
+        <type value="2" description="national"/>
+        <type value="3" description="network specific"/>
+      </attribute>
+      <attribute index="46" name="PLMN_INDICATOR" description="PLMN-indicator">
+        <type value="V" description="Roaming with other network (InterNetwork)"/>
+        <type value="R" description="Roaming within own network (IntraNetwork)"/>
+        <type value="H" description="Home (all other cases)"/>
+      </attribute>
+      <element index="48" name="CALL_ORIGIN_INFO" separator=":"
+               description="Info about call origin: provides information about call origin">
+        <attribute index="01" name="CITY" description="call origin: city"/>
+      </element>
+      <element index="49" name="CALL_DESTINATION_INFO" separator=":"
+               description="Info about call destination: provides information about call destination">
+        <attribute index="01" name="CITY_COUNTRY" description="call destination: city or country"/>
+      </element>
+      <element index="56" name="VPLMN_TAP_CHARGE_INFO" separator=":"
+               description="VPLMN tap charge information">
+        <attribute index="01" name="TAP_NET_RATE" description="VPLMN tap net rate"/>
+        <attribute index="10" name="SO_DESCRIPTION" description="Serving Operator Description"/>
+      </element>
+      <element index="57" name="OUTBOUND_CALL_INFO" separator=":"
+               description="outbound call information: exists if type = 'O'">
+        <attribute index="01" name="DIALED_DIGITS" description="Dialed digits"/>
+        <!-- Serviços Interativos - SMS -->        
+        <attribute index="03" name="DESTINATION_ZONE" description="Destination zone point description"/>
+        <!-- Fim Serviços Interativos - SMS --> 
+        <attribute index="04" name="CGI_CELL" description="CGI cell global identifier of receiving mobile station"/>
+      </element>
+      <element index="58" name="INBOUND_CALL_INFO" separator=":"
+               description="inbound call information: exists if type='I'">
+        <attribute index="01" name="CALLING_NUMBER" description="calling number"/>
+        <attribute index="02" name="CGI_CELL" description="CGI cell global identifier of receiving mobile station"/>
+      </element>
+      <element index="59" name="VAS" separator=":"
+               description="VAS: Always populated on VAS with VAS description, may populated on Roaming records with short description of TAP service">
+        <attribute index="01" name="REMARK" description="remark"/>
+      </element>
+      <element index="60" name="DISCOUNTING_RATED_AMOUNT" separator=":"
+               description="Rated Amount Discounting">
+        <attribute index="01" name="DISCOUNTING_CODE1" description="Discounting Code"/>
+        <attribute index="02" name="DISCOUNTING_CODE2" description="Discounting Code"/>
+        <attribute index="03" name="DISCOUNTING_AMOUNT" description="Discounting Amount"/>
+        <attribute index="04" name="DISCOUNTING_INDICATOR" description="Discounting Indicator">
+          <type value="N" description="NO"/>
+          <type value="Y" description="YES"/>
+        </attribute>
+      </element>
+    </sdd:key>

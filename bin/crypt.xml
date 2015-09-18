@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="auster-billcheckout" default="server.run">
+
+    <property environment="env"/>
+
+    <target name="server.run">
+		 <path id="run.classpath">
+		   <fileset dir="${basedir}/lib" includes="*"/>
+		 </path>
+		 <java classname="br.com.auster.nextel.isc.security.SecurityUtils"
+			   fork="yes"
+			   dir="${basedir}"
+	           resultproperty="java.result">
+
+			<sysproperty key="isc.security.secretkey" value="${secret.key}"/>
+			<sysproperty key="isc.security.algorithm.name" value="${algorithm.name}"/>
+			<sysproperty key="isc.security.algorithm.mode" value="${algorithm.mode}"/>
+			<sysproperty key="isc.security.algorithm.padding" value="${algorithm.padding}"/>
+
+			<arg line="${cmdline.args}"/>
+			<classpath>
+			   <path refid="run.classpath"/>
+			</classpath>		 	
+		 </java>    	
+    	
+        <fail message="Cripto failed!! Please make sure that the parameters are correct.">
+          <condition>
+            <or>
+              <not>
+                <isset property="java.result" />
+              </not>
+              <not>
+                <equals arg1="${java.result}" arg2="0" />
+              </not>
+            </or>
+          </condition>
+        </fail>    	
+    	
+	</target>
+
+</project>

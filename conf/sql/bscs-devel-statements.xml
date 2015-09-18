@@ -1,0 +1,216 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<root>
+  <sql:configuration xmlns:sql="http://www.auster.com.br/common/sql/">
+    <sql:statements>
+
+    <sql:statement name="AllCustomers">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   to_number( ca.billcycle )           AS "cycle"
+            FROM customer_all ca, sysadm.doc_all_04 da
+            WHERE ca.customer_id = da.customer_id AND
+                  da.customer_id in (10100)
+            GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                     ca.costcenter_id, ca.billcycle
+        </sql:query>
+    </sql:statement>
+
+    <sql:statement name="AllEmployees">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   to_number( ca.billcycle )           AS "cycle"
+             FROM customer_all ca, sysadm.doc_all_04 da 
+             WHERE ca.prgcode = 3 AND
+                  ca.customer_id = da.customer_id
+             GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                     ca.costcenter_id, ca.billcycle
+        </sql:query>
+    </sql:statement>
+
+    <sql:statement name="AllBillSuppress">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   to_number( ca.billcycle )           AS "cycle"
+            FROM customer_all ca, sysadm.doc_all_04 da 
+            WHERE ca.CSBILL_SUPPRESS is not null AND 
+                  ca.customer_id = da.customer_id
+            GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                     ca.costcenter_id, ca.billcycle
+        </sql:query>
+    </sql:statement>
+
+    <sql:statement name="AllCustomersNoBillSuppressAllEmployees">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   to_number( ca.billcycle )           AS "cycle"
+            FROM customer_all ca, sysadm.doc_all_04 da 
+            WHERE ((ca.CSBILL_SUPPRESS is null AND ca.prgcode &lt;&gt; 3) 
+                   OR (ca.prgcode = 3) )
+                   AND (ca.customer_id = da.customer_id)
+            GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                     ca.costcenter_id, ca.billcycle
+        </sql:query>
+    </sql:statement>
+    
+    <sql:statement name="AllNoEmployeesNoBillSuppressNoFebraban">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   to_number( ca.billcycle )           AS "cycle"
+             FROM customer_all ca, sysadm.doc_all_04 da 
+             WHERE ca.CSBILL_SUPPRESS is null AND 
+                   ca.prgcode &lt;&gt; 3 AND
+                   NVL(ca.csbillmedium,1) &lt;&gt; 3 AND
+                   ca.customer_id = da.customer_id
+             GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                      ca.costcenter_id, ca.billcycle      
+        </sql:query>
+    </sql:statement>
+
+    <sql:statement name="AllNoEmployeesNoBillSuppress">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   to_number( ca.billcycle )           AS "cycle"
+             FROM customer_all ca, sysadm.doc_all_04 da 
+             WHERE ca.CSBILL_SUPPRESS is null AND 
+                   ca.prgcode &lt;&gt; 3 AND
+                   ca.customer_id = da.customer_id
+             GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                      ca.costcenter_id, ca.billcycle        
+        </sql:query>
+    </sql:statement>
+    
+    <sql:statement name="AllCustomersFebraban">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   to_number( ca.billcycle )           AS "cycle",
+                   ei.cd_federal_tax                   AS "cd_federal_tax", 
+                   ei.cd_market                        AS "cd_market"
+		  FROM customer_all ca, sysadm.doc_all_04 da, eiv.teiv_eletronic_invoice ei
+		  WHERE ca.CSBILL_SUPPRESS is null AND 
+		        ca.csbillmedium BETWEEN 3 AND 4 AND
+		        ca.customer_id = da.customer_id AND
+		        ei.id_customer = da.customer_id
+		  GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                   ca.costcenter_id, ca.billcycle, ei.cd_federal_tax, 
+                   ei.cd_market   
+        </sql:query>
+    </sql:statement>
+    
+    <sql:statement name="TIMMDocument">
+        <sql:query>
+            SELECT document AS "document"
+            FROM sysadm.doc_all_04 
+            WHERE customer_id = ?
+            ORDER BY type_id
+        </sql:query>
+        <sql:param index="1" type="Integer"/>
+    </sql:statement>
+
+	<sql:statement name="DeviceId">
+        <sql:query>
+            SELECT co_id       AS "contract_id",
+                   cd_seqno    AS "seq_num",
+                   cd_status   AS "status",
+                   cd_sm_num   AS "sm_num",
+                   cd_port_num AS "port_num"
+            FROM contr_devices
+            WHERE co_id = ? AND cd_seqno IN ( SELECT MAX(cd_seqno)
+                                              FROM contr_devices
+                                              WHERE co_id = ?)
+	    </sql:query>
+	    <sql:param index="1" type="Integer"/>
+	    <sql:param index="2" type="Integer"/>
+	</sql:statement>
+
+    <sql:statement name="SaldoAnterior">
+        <sql:query>
+            SELECT PREV_BALANCE, 
+                   PAGTOS_EFET,
+                   CSCURBALANCE
+            FROM prod.saldos
+            WHERE custcode = ?
+        </sql:query>
+        <sql:param index="1" type="String"/>
+    </sql:statement>
+
+    <sql:statement name="CGIPrefix">
+	<sql:query>
+	   SELECT  CD_ZONE AS "ZOCODE", 
+	           CD_PREFIX AS "PREFIX",
+	           DS_ZONE AS "DES", 
+	           CD_CGI AS "CGI" 
+	   FROM BIT.TBIT_CGI_PREFIX
+	   ORDER BY CD_ZONE
+	</sql:query>
+    </sql:statement>
+    
+    <sql:statement name="Ohxact">
+        <sql:query>
+          SELECT OHXACT AS "OHXACT" 
+          FROM sysadm.doc_all_04 da
+          WHERE customer_id = ? AND type_id = 1
+        </sql:query>
+        <sql:param index="1" type="String"/>
+    </sql:statement>
+    
+    <sql:statement name="Messages">
+        <sql:query>
+            SELECT DISTINCT textid AS "id",
+                            text   AS "message"
+            FROM bluiftab
+        </sql:query>
+    </sql:statement>
+
+    </sql:statements>
+  </sql:configuration>
+</root>
+

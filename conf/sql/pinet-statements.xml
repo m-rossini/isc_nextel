@@ -1,0 +1,40 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<root>
+  <sql:configuration xmlns:sql="http://www.auster.com.br/common/sql/">
+    <sql:statements>
+
+    <sql:statement name="ClientsForBillCheckout">
+        <sql:query>
+	        SELECT --+ordered
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   to_number( ca.billcycle )           AS "cycle",
+                   'N'                                 AS "ignore_timm",
+                   /*bc.generate_invoice*/'S'                 AS "process_gel"
+	        FROM admin_revenue.rev_param_bill_check_hd@lnk.pnt hd,
+	             admin_revenue.rev_param_bill_check_dt@lnk.pnt dt,
+                 customer_all ca,
+	             sysadm.doc_all_[%CYCLE%] da/*,
+                 cai.nxt_ar_bscs_bill_customers bc*/
+	        WHERE dt.id_head = hd.id_head AND 
+	              hd.status IS NULL AND 
+	              hd.txt_coluna06 = '[%CYCLE%]' AND
+	              ca.custcode = dt.custcode AND
+	              da.customer_id = ca.customer_id /*AND
+                  da.customer_id = bc.bscs_customer_id AND
+                  bc.date_created = da.date_created*/
+            GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                     ca.costcenter_id, ca.billcycle/*,
+                     bc.bill_suppress, bc.generate_invoice*/
+        </sql:query>
+    </sql:statement>
+   
+    </sql:statements>
+  </sql:configuration>
+</root>
+

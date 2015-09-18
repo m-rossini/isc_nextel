@@ -1,0 +1,62 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<root>
+  <sql:configuration xmlns:sql="http://www.auster.com.br/common/sql/">
+    <sql:statements>
+
+    <!--EHO: Incluido tratamento para contemplar imeis reaproveitados através do custcode    -->
+
+	<sql:statement name="MibasContract">
+        <sql:query>
+			SELECT c.fleet_id                                                      AS "fleet_id",
+                   b.part_2                                                        AS "member_id",
+                  (select part_2||Part_1 from mbs.p221 d 
+                   where d.subscriber_ref = a.subscriber_ref and d.addressing_ref = 1) telefone,
+                  (select part_2 from mbs.p221 d 
+                   where d.subscriber_ref = a.subscriber_ref and d.addressing_ref = 1) prefix,
+                   a.holder_name                                                   AS "holder_name"
+            FROM mbs.p006 a,
+                 mbs.p221 b,
+                 mbs.p004 c
+            WHERE b.addressing_ref = 2 AND
+                  a.device_id = ? AND
+                  a.subscriber_ref = b.subscriber_ref AND
+                  b.part_1 = c.fleet_ref AND 
+                  a.OWNER_ID LIKE (select substr(? ,1,decode(substr(? ,1,1),'1',10,to_number(substr(? ,1,1))+2))||'%'
+                                   from dual)
+                  
+	    </sql:query>
+	    <sql:param index="1" type="String"/>
+	    <sql:param index="2" type="String"/>
+	    <sql:param index="3" type="String"/>
+	    <sql:param index="4" type="String"/>
+
+	</sql:statement>
+
+    <!--EHO: Contemplação da function do Mibas. Parametros = imei, custcode    -->
+    
+	<sql:statement name="MibasFunction">
+        <sql:query>
+            SELECT substr(bit.fbit_mibas_details(?,?),1,10)     AS "fleet_id",
+                   substr(bit.fbit_mibas_details(?,?),11,10)    AS "member_id",
+                   substr(bit.fbit_mibas_details(?,?),21,12)    telefone,
+                   substr(bit.fbit_mibas_details(?,?),21,2)     prefix,
+                   substr(bit.fbit_mibas_details(?,?),33,32)    "holder_name"
+            from dual                  
+
+	    </sql:query>
+	    <sql:param index="1" type="String"/>
+	    <sql:param index="2" type="String"/>
+	    <sql:param index="3" type="String"/>
+	    <sql:param index="4" type="String"/>
+	    <sql:param index="5" type="String"/>
+	    <sql:param index="6" type="String"/>
+	    <sql:param index="7" type="String"/>
+	    <sql:param index="8" type="String"/>
+	    <sql:param index="9" type="String"/>
+	    <sql:param index="10" type="String"/>
+
+	</sql:statement>
+
+    </sql:statements>
+  </sql:configuration>
+</root>

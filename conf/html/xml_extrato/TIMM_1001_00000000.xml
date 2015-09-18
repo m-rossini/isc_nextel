@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="nextel_fatura.xsl"?>
+<INVOICE>
+  <BILL>
+    <EXTRATO>
+      <DEMO T="331,76" IM="3">
+        <BAL T="253,47">
+          <DEV T="253,47" DT="010408" IM="1">
+            <IT DS="Serviços de Telecomunicação" V="253,47"/>
+            <IT DS="Equipamentos, Acessórios e Reparos" V="0,00"/>
+          </DEV>
+          <PGTO T="0,00" DT="010508">
+            <IT DS="Serviços de Telecomunicação" VF="0,00" VP="0,00" V="0,00"/>
+            <IT DS="Equipamentos, Acessórios e Reparos" VF="0,00" VP="0,00" V="0,00"/>
+          </PGTO>
+        </BAL>
+        <ATUAL T="78,29" IM="2">
+          <GRP DT="010608" DV="030708">
+            <IT DS="Serviços de Telecomunicação" NB="28766003240-" V="78,29"/>
+            <IT DS="Equipamentos, Acessórios e Reparos" NB="" V="0,00"/>
+          </GRP>
+        </ATUAL>
+      </DEMO>
+      <MSGS>
+        <M>Caro cliente, os valores descritos no extrato são transações realizadas através de boleto ou cheque. Transações realizadas pelo cartão de crédito não são consideradas.</M>
+        <M IM="1">Constam em aberto em nossos sistemas, até a data de emissão desta fatura, os valores dos títulos descritos acima. Para mais informações, ligue em nossa Central de Atendimento *611 grátis do seu Nextel ou 4004-6611 (Tarifa Local). Caso os valores já tenham sido pagos, desconsiderar essas informações.</M>
+        <M IM="2">O(s) boleto(s) enviado(s) nessa fatura não contempla(m) os saldos em aberto (caso existam) de faturas anteriores. O pagamento desta fatura não quita débitos anteriores.</M>
+        <M IM="3">Demonstrativo de saldos em aberto de meses anteriores mais os valores da Fatura Atual.</M>
+        <M>Qualquer dúvida ou para pagamento de saldos anteriores entre em contato com nossa Central de Atendimento ao Cliente *611 grátis do seu Nextel ou 4004-6611 (Tarifa Local). Informações detalhadas da fatura disponíveis também no site www.nextel.com.br.</M>
+      </MSGS>
+    </EXTRATO>
+    <TELECOM>
+      <NF NR="0000004" SR="U" DE="160608" DV="030708" DI="030508" DF="020608" BCIC="149,34" AIC="0,00" VIC="44,80" V="78,29" HC="7905B3B92C0913384DB6D5211EBA0832">
+        <CLIENTE N="IN BITS IND E COM DE BIJOUT E AVIAM LTDA" NR="1.10118240" ID="02.229.980/0001-24" IE="86114755" E="R CAPITAO SENA, 11,   SANTO CRISTO" CEP="20220040" CI="RIO DE JANEIRO" ES="RJ" CES="33"/>
+        <EMITENTE ID="66970229001139" IE="85727028" ES="RJ" CES="33"/>
+        <OBS>
+          <O>MENSALIDADE PROPORCIONAL (SE HOUVER) MAIS MENSALIDADE DO PERIODO 03/06/2008 A 02/07/2008</O>
+          <O>C.F.O.P 5303</O>
+        </OBS>
+        <MSGS>
+          <M>CONTRIBUIÇÃO PARA FUST (ART.9 LEI 9998/00) E FUNTTEL (ART 18 DECRETO 3737/01)</M>
+          <M>1,5% do valor dos servicos - nao repassada as tarifas - BC: 37,09   * 1,5% = 0,56</M>
+        </MSGS>
+        <ITENS>
+          <IT S="001" DS="Juros sobre pagamento em atraso fatura a" QT="1" VU="2,05" V="2,05" AIC="0,00"/>
+          <IT S="002" DS="Mensalidade" QT="1" VU="149,34" V="149,34" AIC="30,00"/>
+          <IT S="004" DS="Multa sobre pagamento em atraso fatura a" QT="1" VU="5,00" V="5,00" AIC="0,00"/>
+          <IT S="005" DS="Mensalidade rental program" QT="1" VU="22,40" V="22,40" AIC="0,00"/>
+          <IT S="006" DS="Valor do Desconto" QT="NaN" VU="0,00" V="-100,50" AIC="0,00"/>
+        </ITENS>
+      </NF>
+      <BOLETO_ARRECADACAO NC="IN BITS IND E COM DE BIJOUT E AVIAM LTDA" IDDA="110118240-8" MR="JUN/2008" DE="160608" DV="030708" V="7.829,00" LD="84830000000-1 78290089000-1 04499999979-8 53825220167-0" CBB="84830000000782900890000449999997953825220167">
+        <MSGS>
+          <M1>O pagamento desta conta não quita débitos anteriores</M1>
+          <M2>Sobre a conta paga após o vencimento incidirá multa de 2% e juros de mora de 0,333% ao dia a serem incluídas em conta futura.</M2>
+          <M3>Para sua comodidade, cadastre sua conta em débito automático utilizando o número de</M3>
+          <M4>Identificação de débito automático indicado neste boleto.</M4>
+        </MSGS>
+      </BOLETO_ARRECADACAO>
+    </TELECOM>
+    <COMPRAS T="0,00" V="0,00">
+      <ITENS T="0,00" V="0,00">
+        <BOLETO NB="BANCO ITAU S/A" CB="341-7" LD="34191.09024  90706.932002  11305.960099 4  28030000722969" CBB="34192280300007229691760290706932001135596000" LP1="ATE O VENCIMENTO PREFERENCIALMENTE NO ITAU OU BANERJ" LP2="APOS O VENCIMENTO SOMENTE NO ITAU OU BANERJ" DV="100605" S="Nextel Telecomunicações Ltda" AC="2001/13059-6" DD="160505" NRD="026614" CE="01" DM="150505" NN="109/02907070-3" C="109" M="R$" V="66.800,55" FP="" VDA="">
+          <SACADO N="JOSE FRANCISCO DOS SANTOS SILVA CONSTRUC" E="R ARTELA  , 111, BOX 3 E 4  PQ UNIVERSITARIO" CEP="13056446" CI="CAMPINAS" ES="SP"/>
+          <INSTR_BANC>
+            <I>- APOS O VENCIMENTO COBRAR MULTA DE 2% SOBRE O VALOR TOTAL CORRIGIDO</I>
+            <I>COBRAR JUROS DE R$    2,40 AO DIA</I>
+          </INSTR_BANC>
+        </BOLETO>
+      </ITENS>
+    </COMPRAS>
+    <MULTAS V="0,00">
+      <ITENS V="0,00">
+        <BOLETO NB="BANCO ITAU S/A" CB="341-7" LD="34191.09024  90706.932006  11305.960555 5  28030000722969" CBB="34192280300007229691760290990200113559600000" LP1="ATE O VENCIMENTO PREFERENCIALMENTE NO ITAU OU BANERJ" LP2="APOS O VENCIMENTO SOMENTE NO ITAU OU BANERJ" DV="100605" S="Nextel Telecomunicações Ltda" AC="2001/13059-6" DD="160505" NRD="026614" CE="01" DM="150505" NN="109/02907822-3" C="109" M="R$" V="10.000,00" FP="" VDA="">
+          <SACADO N="JOSE FRANCISCO DOS SANTOS SILVA CONSTRUC" E="R ARTELA  , 111, BOX 3 E 4  PQ UNIVERSITARIO" CEP="13056446" CI="CAMPINAS" ES="SP"/>
+          <INSTR_BANC>
+            <I>- APOS O VENCIMENTO COBRAR MULTA DE 2% SOBRE O VALOR TOTAL CORRIGIDO</I>
+            <I>COBRAR JUROS DE R$    2,40 AO DIA</I>
+          </INSTR_BANC>
+        </BOLETO>
+      </ITENS>
+    </MULTAS>
+    <NEGOC T="0,00" V="0,00">
+      <ITENS T="0,00" V="0,00">
+        <BOLETO NB="BANCO ITAU S/A" CB="341-7" LD="" CBB="" LP1="ATE O VENCIMENTO PREFERENCIALMENTE NO ITAU OU BANERJ" LP2="APOS O VENCIMENTO SOMENTE NO ITAU OU BANERJ" DV="100605" S="Nextel Telecomunicações Ltda" AC="2001/13059-6" DD="160505" NRD="026614" CE="01" DM="150505" NN="109/02909090-3" C="109" M="R$" V="3.000,00" FP="" VDA="">
+          <SACADO N="JOSE FRANCISCO DOS SANTOS SILVA CONSTRUC" E="R ARTELA  , 111, BOX 3 E 4  PQ UNIVERSITARIO" CEP="13056446" CI="CAMPINAS" ES="SP"/>
+          <INSTR_BANC>
+            <I>- APOS O VENCIMENTO COBRAR MULTA DE 2% SOBRE O VALOR TOTAL CORRIGIDO</I>
+            <I>COBRAR JUROS DE R$    2,40 AO DIA</I>
+          </INSTR_BANC>
+        </BOLETO>
+      </ITENS>
+    </NEGOC>
+  </BILL>
+  <CUSTOMER VERSION="5" ID="18776" C="IN BITS IND E COM DE BIJOUT E AVIAM LTDA" N="ROSANE SCHIOCHET - FERREIRA" A1="Est DA MATRIZ, 6825" A2="Guaratiba" A3="23020715 - Rio de Janeiro, RJ" SR="Y" CID="2" JC="RIO" CD_LOCATION="R" CT="Rio de Janeiro Cidade" ST="RJ" I="03/05/2008" S="03/04/2008" E="02/05/2008" M="56380" B="1.10118240" D="03/06/2008" BCN="15" BCD="03/05/2008" OH="1" NR_INVOICE="1" BM="2">
+    <MESSAGES>
+      <I>A Nextel está cada vez mais próxima de você. Acabamos de inaugurar novas lojas em São Paulo, Rio de Janeiro, São Vicente e Cabo Frio. Confira os endereços no nosso site www.nextel.com.br ou através do atendimento ao cliente (*611 grátis do seu Nextel).</I>
+      <I>Facilite o pagamento de suas faturas, utilize o débito automático. Ligue para nossa Central de Atendimento ou dirija-se a uma das lojas Nextel.</I>
+      <I>Mensagens SMS e Novo Portal de Downloads. Mande mensagens SMS para usuários da TIM, Vivo, Claro, Telemig e Brasil Telecom. E acesse o novo portal através do menu do serviço WAP.</I>
+      <I>Novas lojas: veja nossas inaugurações!! Acabamos de lançar novas lojas em Jundiaí(SP), Guarujá(SP), Taubaté(SP),Mogi das Cruzes(SP),Tatuapé(SP)  e Caxias do Sul(RS).</I>
+      <I>Unificação dos Boletos de Pagamentos: Todos os boletos de compras de aparelhos, acessórios, reparos e outras transações financeiras serão enviados com a mesma data de vencimento para facilitar a sua programação de pagamentos.</I>
+    </MESSAGES>
+    <DETAILS>
+      <SUBSCRIBER>
+        <CONTRACT ID="3327461" FID="" MID="" U="" PP="N" N="" T="92,00" M="80,00" A="12,00" O="0,00" IMEI="001803148113360" TP="GSM">
+          <SERVICES>
+            <SVC ID="ST265" TP="A" V="12,00"/>
+            <SVC ID="DISPP" TP="A" V="80,00"/>
+            <TOTAL CDATA="0,00"/>
+          </SERVICES>
+          <CHARGES>
+            <CHG TP="A" V="92,00">
+              <SVC TP="A" ID="ST265" DS="Prog Locação 2-i265" TR="DIRE0 Direto" ST="a" S="03/05" E="02/06" ND="30" V="12,00"/>
+              <SVC TP="A" ID="DISPP" DS="Rádio Digital - Individual" TR="DIRE0 Direto" ST="a" S="03/05" E="02/06" ND="30" V="80,00"/>
+            </CHG>
+          </CHARGES>
+          <DISPATCH CH="0:00" CH_M="0,00" DR="0:00" DR_M="0,00" F="0:00" F_M="0,00" V="0,00"/>
+          <CALLS>
+            <IDCD V="0,00" DR="0:00" DR_M="0,00"/>
+            <HOME DNF="0:00" DNF_M="0,00" F="0:00" F_M="0,00" CH="0:00" CH_M="0,00" V="0,00">
+              <OUTGOING>
+                <LOCAL/>
+                <LONG_DISTANCE/>
+                <INTERNATIONAL/>
+                <Z300/>
+              </OUTGOING>
+              <INCOMING>
+                <RECEIVED/>
+                <COLLECT/>
+                <DISCOUNTS/>
+              </INCOMING>
+            </HOME>
+            <ROAMING DNF="0:00" DNF_M="0,00" F="0:00" F_M="0,00" CH="0:00" CH_M="0,00" V="0,00">
+              <OUTGOING>
+                <NO_Z300_SUMMARY/>
+                <LOCAL/>
+                <LONG_DISTANCE/>
+                <INTERNATIONAL/>
+                <Z300/>
+              </OUTGOING>
+              <INCOMING>
+                <RECEIVED/>
+                <COLLECT/>
+                <DISCOUNTS/>
+              </INCOMING>
+            </ROAMING>
+            <ONLINE/>
+          </CALLS>
+        </CONTRACT>
+        <CONTRACT ID="3327460" FID="" MID="" U="" PP="N" N="" T="92,00" M="80,00" A="12,00" O="0,00" IMEI="001803148112360" TP="GSM">
+          <SERVICES>
+            <SVC ID="ST265" TP="A" V="12,00"/>
+            <SVC ID="DISPP" TP="A" V="80,00"/>
+            <TOTAL CDATA="0,00"/>
+          </SERVICES>
+          <CHARGES>
+            <CHG TP="A" V="92,00">
+              <SVC TP="A" ID="ST265" DS="Prog Locação 2-i265" TR="DIRE0 Direto" ST="a" S="03/05" E="02/06" ND="30" V="12,00"/>
+              <SVC TP="A" ID="DISPP" DS="Rádio Digital - Individual" TR="DIRE0 Direto" ST="a" S="03/05" E="02/06" ND="30" V="80,00"/>
+            </CHG>
+          </CHARGES>
+          <DISPATCH CH="0:00" CH_M="0,00" DR="0:00" DR_M="0,00" F="0:00" F_M="0,00" V="0,00"/>
+          <CALLS>
+            <IDCD V="0,00" DR="0:00" DR_M="0,00"/>
+            <HOME DNF="0:00" DNF_M="0,00" F="0:00" F_M="0,00" CH="0:00" CH_M="0,00" V="0,00">
+              <OUTGOING>
+                <LOCAL/>
+                <LONG_DISTANCE/>
+                <INTERNATIONAL/>
+                <Z300/>
+              </OUTGOING>
+              <INCOMING>
+                <RECEIVED/>
+                <COLLECT/>
+                <DISCOUNTS/>
+              </INCOMING>
+            </HOME>
+            <ROAMING DNF="0:00" DNF_M="0,00" F="0:00" F_M="0,00" CH="0:00" CH_M="0,00" V="0,00">
+              <OUTGOING>
+                <NO_Z300_SUMMARY/>
+                <LOCAL/>
+                <LONG_DISTANCE/>
+                <INTERNATIONAL/>
+                <Z300/>
+              </OUTGOING>
+              <INCOMING>
+                <RECEIVED/>
+                <COLLECT/>
+                <DISCOUNTS/>
+              </INCOMING>
+            </ROAMING>
+            <ONLINE/>
+          </CALLS>
+        </CONTRACT>
+        <OTHER T="-12,26">
+          <OCC DS="Créd.Mens.Ativação/Entrega - Prog Locação 2-i265" DT="03/05/2008" V="-1,60"/>
+          <OCC DS="Créd.Mens.Ativação/Entrega - Rádio Digital - Indiv" DT="03/05/2008" V="-10,66"/>
+        </OTHER>
+        <CREDITS T="-100,50">
+          <OCC DS="Pagamento em duplicidade ou a maior realizado em 15/05/2008" DT="03/05/2008" V="-100,50"/>
+        </CREDITS>
+        <PENALTY_INTERESTS T="7,05">
+          <OCC DS="Multa fatura 123456 pagamento realizado em 15/05/2008" DT="03/05/2008" V="5,00"/>
+          <OCC DS="Juros fatura 123456 pagamento realizado em 15/05/2008" DT="03/05/2008" V="2,05"/>
+        </PENALTY_INTERESTS>
+      </SUBSCRIBER>
+    </DETAILS>
+    <SUMMARY T="78,29" S="184,00" SS="78,29" M="160,00" D="0,00" DD="0:00" DD_M="0,00" A="24,00" O="0,00" C="-12,26" C1="-100,50" C2="7,05" DICMS="0,00" TOTALBC="0,00" TP="0,00">
+      <HOME T="0,00" LC="0,00" LD="0,00" R="0,00" RC="0,00" I="0,00" Z3="0,00" DC="0,00" TD="0:00" TD_M="0,00"/>
+      <ROAMING T="0,00" D="0,00" R="0,00" RC="0,00" Z3="0,00" DNOZ3="0,00" DC="0,00" TD="0:00" TD_M="0,00"/>
+    </SUMMARY>
+  </CUSTOMER>
+</INVOICE>

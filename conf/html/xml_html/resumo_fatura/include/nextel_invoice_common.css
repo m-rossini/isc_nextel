@@ -1,0 +1,75 @@
+* {
+  font-family: Helvetica, Arial, Century;
+  text-align: left;
+  margin: 0;
+  border-color: black;
+}
+
+.body {
+  margin: 1mm;
+  background-color: white;
+}
+
+hr.dashedRule {
+  border: none 0;
+  border-top: 1px dashed #000;
+  height: 1px;
+  margin-bottom: 1mm;
+  margin-top: 4mm
+}
+
+.table1 {
+  table-layout: fixed;
+  white-space: no-wrap;
+  border-collapse:collapse
+}
+
+.td1 {
+  margin: 0;
+  padding: 0
+}
+
+.ThinBorderTop {
+  border-top-style: solid;
+  border-top-width: 0.2mm;
+}
+
+.ThinBorderRight {
+  border-right-style: solid;
+  border-right-width: 0.2mm;
+}
+
+.ThinBorderBottom {
+  border-bottom-style: solid;
+  border-bottom-width: 0.2mm;
+}
+
+.ThinBorderLeft {
+  border-left-style: solid;
+  border-left-width: 0.2mm;
+}
+
+.MedBorderTop {
+  border-top-style: solid;
+  border-top-width: 0.4mm;
+}
+
+.MedBorderRight {
+  border-right-style: solid;
+  border-right-width: 0.4mm;
+}
+
+.MedBorderBottom {
+  border-bottom-style: solid;
+  border-bottom-width: 0.4mm;
+}
+
+.MedBorderLeft {
+  border-left-style: solid;
+  border-left-width: 0.4mm;
+}
+
+.nbrAlign {
+  text-align: right;
+  padding-right: 1mm
+}

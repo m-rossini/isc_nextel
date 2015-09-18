@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="nextel-isc" default="prepare-config">
+
+	<property environment="env" />
+	<property name="config.dir" value="conf" />
+	<property name="output.dir" value="${work.dir}/data" />
+
+	<target name="prepare">
+		<mkdir dir="${work.dir}" />
+		<mkdir dir="${work.dir}/log" />
+		<mkdir dir="${output.dir}" />
+		<condition property="no-gel">
+			<or>
+				<not>
+					<isset property="gel.file.path" />
+				</not>
+				<equals arg1="${gel.file.path}" arg2="" trim="true" />
+			</or>
+		</condition>
+	</target>
+
+	<target name="check-gel" if="no-gel">
+		<property name="gel.file" value="${work.dir}/GEL.txt" />
+		<touch file="${gel.file}"/>
+	</target>
+
+	<target name="prepare-config" depends="prepare,check-gel">
+		<property name="gel.file" value="${gel.file.path}"/>
+		<copy todir="${work.dir}/bin" overwrite="true">
+			<fileset dir="${basedir}/bin">
+				<include name="run-isc.sh" />
+				<include name="run-isc.xml" />
+				<include name="fix-directories-isc.sh" />
+			</fileset>
+			<filterset begintoken="[%" endtoken="%]">
+				<filter token="WORK_DIR" value="${work.dir}"/>
+				<filter token="OUTPUT_DIR" value="${output.dir}"/>
+				<filter token="CYCLE" value="${cycle}"/>
+				<filter token="BASE_DIR" value="${basedir}"/>
+				<filter token="TRANSACTION_ID" value="${transaction.id}"/>
+			</filterset>
+		</copy>
+		<chmod perm="ug+x" type="file" dir="${work.dir}/bin" includes="*.sh"/>
+		<copy todir="${work.dir}/${config.dir}" overwrite="true">
+			<fileset dir="${config.dir}">
+				<include name="*.xml"/>
+				<include name="sql/*"/>
+			</fileset>
+			<filterset begintoken="[%" endtoken="%]">
+				<filter token="GEL" value="${gel.file}"/>
+				<filter token="WORK_DIR" value="${work.dir}"/>
+				<filter token="OUTPUT_DIR" value="${output.dir}"/>
+				<filter token="CYCLE" value="${cycle}"/>
+				<filter token="MONITOR_PORT" value="${monitor.port}"/>
+			</filterset>
+		</copy>
+	</target>
+
+</project>

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="nextel-isc" default="run">
+
+  <property environment="env" />
+  <property name="config.builder" value="default" />
+  <property name="config.dir" value="conf" />
+  <property name="memory" value="16G"/>
+
+  <!-- The classpath -->
+  <path id="classpath.base">
+    <fileset dir="${basedir}/lib" includes="*,**/*" />
+    <pathelement location="${basedir}/${config.dir}"/>
+    <pathelement location="${ant.home}/lib/ant.jar" />
+  </path>
+	
+  <target name="prepare">
+  	<delete failonerror="false">
+  		<fileset dir="${work.dir}/log" includes="${mode}-${start.DSTAMP}_*.txt"/>
+  	</delete>
+  	<condition property="is-xml">
+  		<equals arg1="${mode}" arg2="xml" trim="true"/>
+  	</condition>
+  	<copy file="${work.dir}/${config.dir}/sql/checkpoint-statements.xml"
+          tofile="${work.dir}/${config.dir}/sql/${mode}-checkpoint-statements.xml" 
+          overwrite="true">
+  	  <filterset begintoken="[%" endtoken="%]">
+  	    <filter token="MODE" value="${mode}"/>
+        <filter token="CYCLE" value="${cycle}"/>  
+	  </filterset>
+  	</copy>
+  </target>
+
+  <target name="run" depends="prepare">
+  	
+    <tstamp prefix="start">
+      <format property="TIMESTAMP" pattern="dd/MM/yyyy HH:mm:ss.SSS" />
+      <format property="DSTAMP" pattern="yyyy-MM-dd" />
+    </tstamp>
+    <echo message="Current Timestamp: ${start.TIMESTAMP}" />
+    <echo message="Processing ${mode} - please wait..." />
+  	
+    <java classname="br.com.auster.nextel.isc.Bootstrap" 
+          classpathref="classpath.base" 
+          output="${work.dir}/log/${mode}-${start.DSTAMP}_stdout.txt" 
+          error="${work.dir}/log/${mode}-${start.DSTAMP}_stderr.txt" 
+    	  append="false"
+          resultproperty="java.result" 
+          fork="true" 
+          maxmemory="${memory}" 
+          dir="${basedir}">
+      <jvmarg value="-server" />
+      <jvmarg value="-d64" />
+      <jvmarg value="-Xms${memory}" />
+      <!-- jvmarg value="-Xconcurrentio" / -->
+      <jvmarg value="-XX:+UseBoundThreads" />
+      <sysproperty key="app.name" value="AusterISC" />
+      <sysproperty key="java.awt.headless" value="true" />
+      <sysproperty key="com.sun.management.jmxremote" value="true" />
+      <sysproperty key="javax.management.builder.initial" 
+      	value="mx4j.server.MX4JMBeanServerBuilder" />
+      <sysproperty key="jdbc.drivers" 
+      	value="org.apache.commons.dbcp.PoolingDriver:oracle.jdbc.driver.OracleDriver"/>
+      <sysproperty key="udd.attribute.formatter" 
+      	value="br.com.auster.nextel.udd.node.GelAttributesFormatter"/>
+      <sysproperty key="br.com.auster.dware.checkpoint.sql.transactionid.initial" 
+      	value="${transaction.id}"/>
+      <sysproperty key="br.com.auster.license.path" 
+        value="${basedir}/lib/license.bin"/>
+      <sysproperty key="br.com.auster.juglib.dir" value="${basedir}/lib"/>
+      <!-- Security attributes -->
+      <sysproperty key="isc.security.secretkey" value="${secret.key}"/>
+      <sysproperty key="isc.security.algorithm.name" value="AES"/>
+      <sysproperty key="isc.security.algorithm.mode" value="CBC"/>
+      <sysproperty key="isc.security.algorithm.padding" value="PKCS5Padding"/>
+
+      <arg value="-x" />
+      <arg value="${work.dir}/${config.dir}/${config.filename}" />
+      <arg value="-b" />
+      <arg value="chain" />
+      <arg value="-a" />
+      <arg value="{{builder={{transaction-id=${transaction.id};filenames=${input.file.path}}}}}" />
+      <arg line="-s false"/>
+    </java>
+  	
+    <echo message="Done!" />
+    <tstamp prefix="end">
+      <format property="TIMESTAMP" pattern="dd/MM/yyyy HH:mm:ss.SSS" />
+    </tstamp>
+    <echo message="Current Timestamp: ${end.TIMESTAMP}" />
+  	
+  	<echo message="Compressing LOG files..." />
+  	<tar destfile="${work.dir}/log/${mode}-logs.tar.gz" 
+  		 basedir="${work.dir}/log" 
+  		 includes="*.txt,*.log"
+  	     compression="gzip"/>
+  	<delete quiet="true"> 
+  	  <fileset dir="${work.dir}/log" includes="*" excludes="*.gz"/>
+  	</delete>
+  	<echo message="Finished compressing LOG files." />
+  	
+    <fail message="ISC failed!! Please see the log files for more information.">
+      <condition>
+        <or>
+          <not>
+            <isset property="java.result" />
+          </not>
+          <not>
+            <equals arg1="${java.result}" arg2="0" />
+          </not>
+        </or>
+      </condition>
+    </fail>
+  	
+  	<antcall target="concatFLAT"/>
+  </target>
+	
+  <target name="concatFLAT" if="is-xml">
+  	<echo message="Started to concatenate FLAT files at ${output.dir}/clientes.flat"/>
+  	<concat destfile="${output.dir}/clientes.flat" 
+  		    encoding="ISO-8859-1"
+  		    fixlastline="yes" 
+  	        eol="unix">
+  		<fileset dir="${output.dir}" includes="**/CUST*.flat" 
+                 excludes="**/CUST*-3.flat"/>
+  	</concat>
+  	<gzip src="${output.dir}/clientes.flat"
+  	      destfile="${output.dir}/clientes.flat.gz"/>
+  	<delete file="${output.dir}/clientes.flat"/>
+  	<echo message="Finished to concatenate FLAT files."/>
+    <echo message="Started to concatenate employees FLAT files at ${output.dir}/funcionarios.flat"/>
+        <concat destfile="${output.dir}/funcionarios.flat" 
+                encoding="ISO-8859-1"
+                fixlastline="yes" 
+                eol="unix">
+            <fileset dir="${output.dir}" includes="**/CUST*-3.flat"/>
+        </concat>
+        <gzip src="${output.dir}/funcionarios.flat"
+              destfile="${output.dir}/funcionarios.flat.gz"/>
+        <delete file="${output.dir}/funcionarios.flat"/>
+        <echo message="Finished to concatenate employees FLAT files."/>
+  </target>
+
+</project>

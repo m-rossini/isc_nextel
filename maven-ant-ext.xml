@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="auster-isc-nextel" default="lock" basedir=".">
+
+  <property environment="env"/>
+  <property file="project.properties"/>
+
+  <path id="base.classpath">
+    <pathelement location="${auster.auster-commons-base}"/>
+    <pathelement location="${log4j.log4j}"/>
+    <pathelement location="${commons-collections.commons-collections}"/>
+    <pathelement location="${xalan.xalan}"/>
+  </path>
+
+
+  <!-- Creates a br.com.auster.common.security.ResourceReady lock file-->
+  <target name="lock">
+    <delete file="${maven.build.resources.dir}/${lock.args.filename}"/>
+    <java classname="br.com.auster.common.security.LockGenerator" 
+            failonerror="true" fork="true">
+      <!-- classpath -->
+      <classpath>
+        <pathelement location="${auster.auster-commons-base}"/>
+        <pathelement location="${auster.lock-generator}"/>
+        <pathelement location="${jug.jug-asl}"/>
+      </classpath>
+      <sysproperty key="br.com.auster.license.path" 
+                       value="${maven.build.resources.dir}/${lock.args.filename}"/>
+      <sysproperty key="br.com.auster.juglib.dir" 
+                       value="${lock.jug.libdir}"/>
+      <!-- Output filename -->
+      <arg file="${maven.build.resources.dir}/${lock.args.filename}"/>
+      <!-- Number of days the resource can be used (from the current date) -->
+      <arg value="${lock.args.ndays}"/>
+      <!-- Product ID -->
+      <arg value="${lock.args.pid}"/>
+      <!-- Number of times resource can be executed -->
+      <arg value="${lock.args.count}"/>
+      <!-- Restricts the execution to the specified IP address -->
+      <arg value="${lock.args.ipMask}"/>
+      <!-- Restricts the execution to the specified MAC address -->
+      <arg value="${lock.args.macAddress}"/>
+    </java>
+  </target>
+
+  <!-- BE CAREFUL! THIS IS FOR DEVELOPMENT ONLY!!!!! -->
+  <target name="lock-devel">
+    <delete file="licence.bin"/>
+    <java classname="br.com.auster.common.security.LockGenerator" 
+              failonerror="true" fork="true">
+      <!-- classpath -->
+      <classpath>
+        <pathelement location="${auster.auster-commons-base}"/>
+        <pathelement location="${auster.lock-generator}"/>
+        <pathelement location="${jug.jug-asl}"/>
+      </classpath>
+      <sysproperty key="br.com.auster.license.path" value="license.bin"/>
+      <sysproperty key="br.com.auster.juglib.dir" value="${lock.jug.libdir}"/>
+      <arg file="license.bin"/>
+      <arg value="-1"/>
+      <arg value="${lock.args.pid}"/>
+      <arg value="-1"/>
+    </java>
+  </target>
+
+</project>

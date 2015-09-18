@@ -1,0 +1,48 @@
+.exIntro {
+  font-size: 8.5pt
+}
+
+.exMsgs {
+  display: inline;
+  font-size: 7pt;
+  line-height: 10pt
+}
+
+.exRow,.exSecTitle,.exTotTbl {
+  font-size: 9pt;
+  line-height: 13pt
+}
+
+.exSecTitle {
+  font-weight: bold;
+  line-height: 6mm;
+  color: white;
+  background-color: #999999;
+  margin-top: 1mm;
+  margin-bottom: 2mm;
+  padding-left: 1mm
+}
+
+.exTotTbl {
+  font-weight: bold;
+  margin-bottom: 2mm
+}
+
+.exInfo {
+  font-size: 9pt;
+  line-height: 12pt
+}
+
+.detFont {
+  font-size: 7.5pt;
+  line-height: 9pt;
+}
+
+#detRow {
+  height: 30px
+}
+
+#detCell {
+  border-color: white;
+  text-align: center
+}

@@ -1,0 +1,88 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<root> 
+  <sql:configuration xmlns:sql="http://www.auster.com.br/common/sql/">
+    <sql:statements>
+
+    <sql:statement name="chkpLoadAllRequests">
+        <sql:query>
+	   
+	   SELECT CD_PROCESS_CHECKPOINT,
+	          CD_CUSTOMER,
+	          TP_PROCESS_[%MODE%]
+           FROM TISC_PROCESS_CHECKPOINT 
+           
+        </sql:query>
+    </sql:statement>
+    
+    <sql:statement name="chkpLoadAllByTransaction">
+        <sql:query>
+           
+           SELECT CD_CUSTOMER,
+                  TP_PROCESS_[%MODE%]
+           FROM TISC_PROCESS_CHECKPOINT           
+           WHERE CD_PROCESS_CHECKPOINT = ? 
+           
+        </sql:query>
+        <sql:param index="1" type="String"/>
+    </sql:statement>
+    
+    <sql:statement name="chkpInsertRequest">
+        <sql:query>
+
+            INSERT INTO TISC_PROCESS_CHECKPOINT (
+	             CD_BILL_CYCLE        ,
+	             DT_CUT_OFF_BILL_CYCLE ,
+	             cd_PROCESS_CHECKPOINT,
+	             cd_CUSTOMER          ,
+	             TP_PROCESS_XML       ,
+	             TP_PROCESS_TXT       ,
+	             TP_PROCESS_PDF       ,
+	             TP_PROCESS_FEB       ,
+	             TP_PROCESS_FCN       ,
+	             TP_PROCESS_CG        ,
+	             TP_PROCESS_ALL       ,
+	             DT_CREATED           ,
+	             DT_LAST_MODIFICATION ,
+	             TX_PROCESS_CHECKPOINT)
+	             VALUES (
+	              '[%CYCLE%]',
+	  	      (SELECT DATE_CREATED FROM SYSADM.DOC_ALL_[%CYCLE%] WHERE ROWNUM = 1),
+	  	      ?,
+	  	      ?,
+	  	      NULL,
+	  	      NULL,
+	  	      NULL,
+	  	      NULL,
+	  	      NULL,
+	  	      NULL,
+	  	      NULL,
+	  	      SYSDATE,
+	  	      SYSDATE,
+	  	      ? ) 
+	  	      
+	  	      
+        </sql:query>
+        <sql:param index="1" type="String"/>
+        <sql:param index="2" type="String"/>
+        <sql:param index="3" type="String"/>
+    </sql:statement>
+    
+    <sql:statement name="chkpUpdateRequest">
+        <sql:query>
+         UPDATE TISC_PROCESS_CHECKPOINT 
+	 SET TP_PROCESS_[%MODE%] = ?,
+	     DT_LAST_MODIFICATION = SYSDATE,
+         TX_PROCESS_CHECKPOINT = '[%CYCLE%]'
+	 WHERE CD_PROCESS_CHECKPOINT = ?
+         AND  CD_CUSTOMER = ?
+         AND  CD_BILL_CYCLE = '[%CYCLE%]'
+        </sql:query>
+        <sql:param index="1" type="String"/>
+        <sql:param index="2" type="String"/>
+        <sql:param index="3" type="String"/>
+    </sql:statement>
+   
+    </sql:statements>
+  </sql:configuration>
+</root>
+

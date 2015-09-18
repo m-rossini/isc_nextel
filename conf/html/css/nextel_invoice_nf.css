@@ -1,0 +1,33 @@
+.nfAddr {
+  font-size: 5pt;
+}
+
+.nfAddrTel {
+  text-decoration: underline;
+}
+
+.nfAddrNextel {
+  font-size: 6pt;
+  font-weight: bold;
+}
+
+.nfBorderLeft {
+  border-style: solid none solid solid;
+  border-width: 0.2mm 0 0.2mm 1mm
+}
+
+.nfBorderRight {
+  border-style: solid solid solid none;
+  border-width: 0.2mm 1mm 0.2mm 0
+}
+
+.nfTotName {
+  font-weight: bold; 
+  padding-top: 0.5mm
+}
+
+.nfTotValue {
+  padding-left: 12mm; 
+  margin-top: 2mm; 
+  margin-bottom: 2mm
+}

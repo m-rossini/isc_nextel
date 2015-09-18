@@ -1,0 +1,195 @@
+<udd:document xmlns:udd="http://www.auster.com.br/udd/SimpleFlatFileReader/"
+              name="TELECOM" 
+              description="Mapeamento GEL File Nextel - Junho de 2006" 
+              descriptor-date="2006/06/06"
+	          encoding-from="ISO-8859-1" 
+              max-record-size="16384" 
+              buffer-size="262144" 
+              separator-char="\n" 
+              escape-char="?"
+	          quiet-missing="true">
+
+<udd:choose>
+  <udd:value start="1" size="1" />
+  <udd:when name="FIRST" value="0">
+    <udd:attribute name="TR" description="Tipo de Registro" start="1" size="1" />
+    <udd:attribute name="AC" description="Agência Cedente" start="2" size="35" />
+    <udd:attribute name="RSE" description="Razão Social da Empresa" start="37" size="60" />
+    <udd:attribute name="CB" description="Código do Banco" start="97" size="3" type="number"
+      format="###" />
+    <udd:attribute name="NB" description="Nome do Banco" start="100" size="15" />
+    <udd:attribute name="CM" description="Código da Moeda" start="115" size="1" type="number"
+      format="#" />
+    <udd:attribute name="DM" description="Descrição da Moeda" start="116" size="12" />
+    <udd:attribute name="C" description="Carteira" start="128" size="8" />
+    <udd:attribute name="CBDV" description="Código do Banco + Dígito Verificador" start="136"
+      size="4" type="number" format="####" />
+    <udd:attribute name="FV" description="Fator de Vencimento" start="140" size="4" type="number"
+      format="#" />
+    <udd:attribute name="LP1" description="Local de Pagamento 1" start="156" size="70" />
+    <udd:attribute name="LP2" description="Local de Pagamento 2" start="226" size="70" />
+    <udd:attribute name="IB1" description="Instrução Bancária 1" start="296" size="70" />
+    <udd:attribute name="IB2" description="Instrução Bancária 2" start="366" size="70" />
+    <udd:attribute name="DP" description="Data de Processamento" start="436" size="6" type="date"
+      parse="ddMMyy" format="dd/MM/yyyy" />
+    <udd:attribute name="PT" description="Posição do Texto" start="591" size="1" type="number"
+      format="#" />
+    <udd:attribute name="PH" description="Posição Horizontal" start="592" size="2" />
+    <udd:attribute name="PV" description="Posição Vertical" start="594" size="2" />
+    <udd:attribute name="TIMP" description="Tipo de Impressora" start="596" size="1" type="number"
+      format="#" />
+    <udd:attribute name="CC" description="Conjunto de Caracters" start="597" size="1" type="number"
+      format="#" />
+    <udd:attribute name="BSCS" description="Código BSCS" start="601" size="20" />
+    <udd:attribute name="NBSCS" description="Novo Código BSCS" start="1221" size="24" />
+  </udd:when>
+  <udd:when name="SECOND" value="1">
+    <udd:attribute name="TR" description="Tipo de Registro" start="1" size="1" />
+    <udd:attribute name="CGC" description="CGC da Empresa" start="2" size="14" />
+    <udd:attribute name="CE" description="Código da Espécie" start="16" size="2" />
+    <udd:attribute name="ND" description="Número do Documento" start="18" size="6" type="number"
+      format="#0" />
+    <udd:attribute name="P" description="Parcela" start="24" size="2" type="number" format="##" />
+    <!-- udd:attribute name="B1" description="Brancos"                  start="25"  size="5" / -->
+    <udd:attribute name="NN" description="Nosso Número" start="31" size="30" />
+    <udd:attribute name="CL" description="Campo Livre" start="61" size="25" />
+    <udd:attribute name="DV" description="Data de Vencimento" start="86" size="6" type="date"
+      parse="ddMMyy" format="dd/MM/yyyy" />
+    <udd:element name="VO" description="Valor Original" start="93" size="14">
+      <udd:attribute name="INT" start="1" size="12" type="number" format="#0" />
+      <udd:attribute name="DEC" start="13" size="2" type="number" format="00" />
+    </udd:element>
+    <udd:attribute name="CED" description="Código da Espécie de Documento" start="112" size="7" />
+    <udd:attribute name="CGP" description="Contrato de Garantia do Portador" start="119" size="1" />
+    <udd:attribute name="DE" description="Data de Emissão" start="120" size="6" type="date"
+      parse="ddMMyy" format="dd/MM/yyyy" />
+    <udd:attribute name="CGE" description="CGC do Emitente" start="126" size="30" />
+    <udd:attribute name="NE" description="Nome do Emitente" start="156" size="50" />
+    <udd:attribute name="E" description="Endereço" start="206" size="50" />
+    <udd:attribute name="B" description="Bairro" start="256" size="12" />
+    <udd:attribute name="CEP" description="CEP" start="268" size="8" type="number"
+      format="00000000" />
+    <udd:attribute name="CI" description="Cidade" start="276" size="33" />
+    <udd:attribute name="ES" description="Estado" start="309" size="2" />
+    <udd:attribute name="S" description="Sacador" start="311" size="50" />
+    <udd:attribute name="IS" description="Identificação do Sacador" start="361" size="30" />
+    <udd:attribute name="IB1" description="Instrução Bancária 1" start="391" size="70" />
+    <udd:attribute name="IB2" description="Instrução Bancária 2" start="461" size="70" />
+    <udd:attribute name="IB3" description="Instrução Bancária 3" start="531" size="70" />
+    <udd:attribute name="BSCS" description="Código BSCS" start="601" size="20" />
+    <udd:attribute name="LD" description="Linha Digitável" start="621" size="58" />
+    <udd:attribute name="CBB" description="Código de Barras do Boleto" start="680" size="44" />
+    <udd:attribute name="NBSCS" description="Novo Código BSCS" start="1221" size="24" />
+  </udd:when>
+  <udd:when name="THIRD" value="2">
+    <udd:attribute name="TR" description="Tipo de Registro" start="1" size="1" />
+    <udd:attribute name="NN" description="Número da Nota" start="2" size="7" type="number"
+      format="000000000" />
+    <udd:attribute name="S" description="Série" start="9" size="3" />
+    <udd:attribute name="DE" description="Data de Emissão" start="12" size="6" type="date"
+      parse="ddMMyy" format="dd/MM/yyyy" />
+    <udd:attribute name="DV" description="Data de Vencimento" start="18" size="6" type="date"
+      parse="ddMMyy" format="dd/MM/yyyy" />
+    <udd:element name="N" description="Natureza" start="24" size="35" show-text="true">
+      <udd:attribute name="E" description="Estabelecimento" start="1" size="3" />
+      <udd:attribute name="NO" description="Natureza da Operação" start="4" size="7" />
+    </udd:element>
+    <udd:attribute name="PV" description="Pedido de Venda" start="59" size="12" />
+    <udd:attribute name="NC" description="Nome do Cliente" start="71" size="40" />
+    <udd:attribute name="CC" description="Código do Cliente" start="111" size="7" />
+    <udd:attribute name="EC" description="Endereço do Cliente" start="118" size="40" />
+    <udd:attribute name="CEP" description="CEP" start="158" size="8" type="number"
+      format="00000000" />
+    <udd:attribute name="C" description="Cidade" start="166" size="25" />
+    <udd:attribute name="CGCC" description="CGC/CNPJ Cliente" start="191" size="30" />
+    <udd:attribute name="IEC" description="Inscrição Estadual Cliente" start="221" size="19" />
+    <udd:attribute name="DIP" description="Data Início Período" start="240" size="6" type="date"
+      parse="ddMMyy" format="dd/MM/yyyy" />
+    <udd:attribute name="DFP" description="Data Fim Período" start="246" size="6" type="date"
+      parse="ddMMyy" format="dd/MM/yyyy" />
+    <udd:attribute name="VE" description="Valor por Extenso" start="252" size="160" />
+    <udd:element name="BCICMS" description="Base de Cálculo ICMS" start="412" size="15">
+      <udd:attribute name="INT" start="1" size="13" type="number" format="#0" />
+      <udd:attribute name="DEC" start="14" size="2" type="number" format="00" />
+    </udd:element>
+    <udd:element name="AICMS" description="Alíquota ICMS" start="427" size="5">
+      <udd:attribute name="INT" start="1" size="3" type="number" format="#0" />
+      <udd:attribute name="DEC" start="4" size="2" type="number" format="00" />
+    </udd:element>
+    <udd:element name="VICMS" description="Valor ICMS" start="432" size="15">
+      <udd:attribute name="INT" start="1" size="13" type="number" format="#0" />
+      <udd:attribute name="DEC" start="14" size="2" type="number" format="00" />
+    </udd:element>
+    <udd:element name="VTN" description="Valor Total da Nota" start="447" size="15">
+      <udd:attribute name="INT" start="1" size="13" type="number" format="#0" />
+      <udd:attribute name="DEC" start="14" size="2" type="number" format="00" />
+    </udd:element>
+    <udd:attribute name="CGCE" description="CGC Emitente" start="462" size="30" />
+    <udd:attribute name="IEE" description="Inscrição Estadual Emitente" start="492" size="19" />
+    <udd:attribute name="UFC" description="UF do Cliente" start="511" size="2" />
+    <udd:attribute name="CFO" description="CFO" start="513" size="3" />
+    <udd:attribute name="UFE" description="UF do Emitente" start="516" size="2" />
+    <udd:attribute name="ST" description="Substituição Tributária (1/2)" start="518" size="2"
+      type="number" format="#" />
+    <udd:attribute name="CUF1" description="Código da Unidade da Federação" start="520" size="2"
+      type="number" format="#" />
+    <udd:attribute name="CUF2" description="Código da Unidade da Federação" start="522" size="2"
+      type="number" format="#" />
+    <udd:attribute name="NP" description="Número do Processo" start="524" size="40" />
+    <udd:attribute name="BSCS" description="Código BSCS" start="601" size="20" />
+    <udd:attribute name="OB1" description="Observações 1" start="621" size="100" />
+    <udd:attribute name="OB2" description="Observações 2" start="721" size="100" />
+    <udd:attribute name="OB3" description="Observações 3" start="821" size="100" />
+    <udd:attribute name="OB4" description="Observações 4" start="921" size="100" />
+    <udd:attribute name="M1" description="Mensagem 1" start="1021" size="100" />
+    <udd:attribute name="M2" description="Mensagem 2" start="1121" size="100" />
+    <udd:attribute name="NBSCS" description="Novo Código BSCS" start="1221" size="24" />
+  </udd:when>
+  <udd:when name="FOURTH" value="3">
+    <udd:attribute name="TR" description="Tipo de Registro" start="1" size="1" />
+    <udd:attribute name="NN" description="Número da Nota" start="2" size="7" type="number"
+      format="000000000" />
+    <udd:attribute name="S" description="Série" start="9" size="3" />
+    <udd:attribute name="SI" description="Sequência do Item" start="12" size="3" type="number"
+      format="#" />
+    <udd:attribute name="DI" description="Descrição do Item" start="15" size="40" />
+    <udd:element name="QI" description="Quantidade do Item" start="55" size="11">
+      <udd:attribute name="INT" start="1" size="7" type="number" format="#0" />
+      <udd:attribute name="DEC" start="8" size="4" type="number" format="0000" />
+    </udd:element>
+    <udd:element name="VU" description="Valor Unitário" start="66" size="15">
+      <udd:attribute name="INT" start="1" size="13" type="number" format="#0" />
+      <udd:attribute name="DEC" start="14" size="2" type="number" format="00" />
+    </udd:element>
+    <udd:element name="VTI" description="Valor Total do Item" start="81" size="15">
+      <udd:attribute name="INT" start="1" size="13" type="number" format="#0" />
+      <udd:attribute name="DEC" start="14" size="2" type="number" format="00" />
+    </udd:element>
+    <udd:attribute name="CC" description="Código do Cliente" start="96" size="7" />
+    <udd:attribute name="CGCE" description="CGC Emitente" start="103" size="30" />
+    <udd:attribute name="IEE" description="Inscrição Estadual Emitente" start="133" size="19" />
+    <udd:element name="AII" description="Aliquota ICMS do Item" start="152" size="5">
+      <udd:attribute name="INT" start="1" size="3" type="number" format="#0" />
+      <udd:attribute name="DEC" start="4" size="2" />
+    </udd:element>
+    <udd:attribute name="BSCS" description="Código BSCS" start="601" size="20" />
+    <udd:attribute name="NBSCS" description="Novo Código BSCS" start="1221" size="24" />
+  </udd:when>
+  <udd:when name="FIFTH" value="4">
+    <udd:attribute name="TR" description="Tipo de Registro" start="1" size="1" />
+    <udd:attribute name="NN" description="Número da Nota" start="2" size="7" type="number"
+      format="000000000" />
+    <udd:attribute name="S" description="Série" start="9" size="3" />
+    <udd:attribute name="CC" description="Código do Cliente" start="96" size="7" />
+    <udd:attribute name="CGCE" description="CGC Emitente" start="103" size="30" />
+    <udd:attribute name="IEE" description="Inscrição Estadual Emitente" start="133" size="19" />
+    <udd:attribute name="M" description="Mensagens" start="152" size="100" />
+    <udd:attribute name="BSCS" description="Código BSCS" start="601" size="20" />
+  </udd:when>
+  <udd:when name="SIXTH" value="5">
+    <udd:attribute name="TR" description="Tipo de Registro" start="1" size="1" />
+    <udd:attribute name="HC" description="Tipo de Registro" start="2" size="39" />
+  </udd:when>
+</udd:choose>
+
+</udd:document>

@@ -1,0 +1,44 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<root>
+  <sql:configuration xmlns:sql="http://www.auster.com.br/common/sql/">
+    <sql:statements xmlns:sql="http://www.auster.com.br/common/sql/">
+
+      <sql:statement name="AllCustomers">
+        <sql:query>
+          SELECT d.customer_id AS "customer_id",
+                 c.customer_code AS "custcode",
+                 sum(d.document_size) AS "timm_size",
+                 TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                 d.date_created AS "date"
+          FROM document_all d , customers c
+          WHERE d.customer_id = c.customer_id and d.customer_id in (229)
+          GROUP BY d.customer_id, d.date_created, c.customer_code
+        </sql:query>
+      </sql:statement>
+
+      <sql:statement name="TIMMDocument">
+        <sql:query>
+          SELECT document
+          FROM document_all
+          WHERE customer_id = ?
+          ORDER BY type_id
+        </sql:query>
+        <sql:param index="1" type="Integer" />
+      </sql:statement>
+
+      <sql:statement name="CGIPrefix">
+        <sql:query>
+          SELECT CD_ZONE AS "ZOCODE",
+                 CD_PREFIX AS "PREFIX",
+                 DS_ZONE AS "DES",
+                 CD_CGI AS "CGI"
+          FROM TBIT_CGI_PREFIX
+          ORDER BY CD_ZONE
+        </sql:query>
+      </sql:statement>
+
+
+    </sql:statements>
+  </sql:configuration>
+</root>
+

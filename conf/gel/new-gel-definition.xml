@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<udd:document
+    name="GEL"
+	description="Mapeamento Arquivo Financeiro para QAT Fatura"
+	descriptor-date="2006/11/08"
+	xmlns:udd="http://www.auster.com.br/udd/TaggedFileReader/"
+	xmlns:xi="http://www.w3.org/2001/XInclude"
+    encoding-from="ISO-8859-1"
+	max-record-size="1536"
+    buffer-size="262144"
+    separator-char="\n"
+    quiet-missing="true">
+
+  <udd:key-definition>
+    <udd:attribute name="key" start="1" size="2"/>
+  </udd:key-definition>
+
+  <udd:key-definition name="type">
+    <udd:attribute name="key" start="3" size="2"/>
+  </udd:key-definition>
+
+  <udd:key start-key="00" end-key="99" name="BILL">
+    <udd:attribute name="BSCS" start="5" size="24" description="Custcode BSCS"/>
+
+    <!--  Saldos Devedores: uma TAG "DEV" para cada tipo de lançamento -->
+    <udd:key start-key="01" name="DEV">
+      <udd:attribute name="TP" start="3" size="2" description="Tipo de Lançamento"/>
+      <udd:attribute name="DS" start="5" size="100" description="Descrição"/>
+      <udd:attribute name="DT" start="105" size="6" description="Data de Referência"
+                     type="date" parse="ddMMyy" format="dd/MM/yyyy"/>
+      <udd:attribute name="V" start="111" size="15" description="Saldo Devedor"
+                     type="number" format="#000"/>
+    </udd:key>
+
+    <!--  Histórico de Pagamentos: uma TAG "PAG" para cada tipo de lançamento -->
+    <udd:key start-key="02" name="PGTO">
+      <udd:attribute name="TP" start="3" size="2" description="Tipo de Lançamento"/>
+      <udd:attribute name="DS" start="5" size="100" description="Descrição"/>
+      <udd:attribute name="DT" start="105" size="6" description="Data de Referência"
+                     type="date" parse="ddMMyy" format="dd/MM/yyyy"/>
+      <udd:attribute name="VF" start="111" size="15" description="Valor Faturado"
+                     type="number" format="#000"/>
+      <udd:attribute name="VP" start="126" size="15" description="Valor Pago"
+                     type="number" format="#000"/>
+      <udd:attribute name="V" start="141" size="15" description="Saldo Devedor"
+                     type="number" format="#000"/>
+    </udd:key>
+
+    <!--  Fatura Atual: uma TAG "ATUAL" para cada tipo de lançamento -->
+    <udd:key start-key="03" name="ATUAL">
+      <udd:attribute name="TP" start="3" size="2" description="Tipo de Lançamento"/>
+      <udd:attribute name="DS" start="5" size="100" description="Descrição"/>
+      <udd:attribute name="DT" start="105" size="6" description="Data de Referência"
+                     type="date" parse="ddMMyy" format="dd/MM/yyyy"/>
+      <udd:attribute name="DV" start="111" size="6" description="Data de Vencimento"
+                     type="date" parse="ddMMyy" format="dd/MM/yyyy"/>
+      <udd:attribute name="NB" start="117" size="30" description="Núm do Boleto"/>
+      <udd:attribute name="V" start="147" size="15" description="Valor Total"
+                     type="number" format="#000"/>
+    </udd:key>
+
+    <!--  Lançamentos Futuros: uma TAG "FUT" para cada tipo de lançamento -->
+    <udd:key start-key="04" name="FUT">
+      <udd:attribute name="TP" start="3" size="2" description="Tipo de Lançamento"/>
+      <udd:attribute name="DS" start="5" size="100" description="Descrição"/>
+      <udd:attribute name="DT" start="105" size="6" description="Data de Vencimento"
+                     type="date" parse="ddMMyy" format="dd/MM/yyyy"/>
+      <udd:attribute name="NRP" start="111" size="3" description="Núm de Parcelas"
+                     type="number" format="#0"/>
+      <udd:attribute name="NRPV" start="114" size="3" description="Núm Parc a Vencer"
+                     type="number" format="#0"/>
+      <udd:attribute name="VPV" start="117" size="15" description="Valor da Parcela a Vencer"
+                     type="number" format="#000"/>
+      <udd:attribute name="V" start="132" size="15" description="Saldo a Vencer"
+                     type="number" format="#000"/>
+    </udd:key>
+
+    <udd:key start-key="10" name="NF">
+      <udd:attribute name="TP" start="3" size="2" description="Tipo de Lançamento"/>
+      <udd:attribute name="NR" start="5" size="7" description="Número da Nota"
+                     type="number" format="000000000" />
+      <udd:attribute name="SR" start="12" size="3" description="Série" />
+      <udd:attribute name="DE" start="15" size="6"  description="Data de Emissão"
+                     type="date" parse="ddMMyy" format="dd/MM/yyyy" />
+      <udd:attribute name="DV" start="21" size="6" description="Data de Vencimento"
+                     type="date" parse="ddMMyy" format="dd/MM/yyyy" />
+      <udd:element name="N" start="27" size="35" description="Natureza" show-text="true">
+        <udd:attribute name="E" start="1" size="3" description="Estabelecimento" />
+        <udd:attribute name="NO" start="4" size="7" description="Natureza da Operação" />
+      </udd:element>
+      <udd:attribute name="PV" start="62" size="12" description="Pedido de Venda" />
+      <udd:attribute name="N-C" start="74" size="40" description="Nome do Cliente" />
+      <udd:attribute name="E-C" start="114" size="40" description="Endereço do Cliente" />
+      <udd:attribute name="CEP-C" start="154" size="8" description="CEP"
+                     type="number" format="00000000" />
+      <udd:attribute name="CI-C" start="162" size="25" description="Cidade" />
+      <udd:attribute name="ID-C" start="187" size="30" description="CGC/CNPJ Cliente" />
+      <udd:attribute name="IE-C" start="217" size="19" description="Inscrição Estadual Cliente" />
+      <udd:attribute name="DI" start="236" size="6" description="Data Início Período"
+                     type="date" parse="ddMMyy" format="dd/MM/yyyy" />
+      <udd:attribute name="DF" start="242" size="6" description="Data Fim Período"
+                     type="date" parse="ddMMyy" format="dd/MM/yyyy" />
+      <udd:attribute name="VE" start="248" size="160" description="Valor por Extenso" />
+      <udd:attribute name="BCIC" start="408" size="15" description="Base de Cálculo ICMS"
+                     type="number" format="#000"/>
+      <udd:attribute name="AIC" start="423" size="5" description="Alíquota ICMS"
+                     type="number" format="#000"/>
+      <udd:attribute name="VIC" start="428" size="15" description="Valor ICMS"
+                     type="number" format="#000"/>
+      <udd:attribute name="V" start="443" size="15" description="Valor Total da Nota"
+                     type="number" format="#000"/>
+      <udd:attribute name="ID-E" start="458" size="30" description="CPF/CNPJ Emitente" />
+      <udd:attribute name="IE-E" start="488" size="19" description="Inscrição Estadual Emitente" />
+      <udd:attribute name="ES-C" start="507" size="2" description="Estado(UF) do Cliente" />
+      <udd:attribute name="CFO" start="509" size="3" description="CFO" />
+      <udd:attribute name="ES-E" start="512" size="2" description="Estado(UF) do Emitente" />
+      <udd:attribute name="ST" start="514" size="2" description="Substituição Tributária (1/2)"
+                     type="number" format="#" />
+      <udd:attribute name="CUF-C" start="516" size="2" description="Código da UF do Cliente"
+                     type="number" format="#" />
+      <udd:attribute name="CUF-E" start="518" size="2" description="Código da UF do Emitente"
+                     type="number" format="#" />
+      <udd:attribute name="NP" start="520" size="77" description="Número do Processo" />
+      <udd:attribute name="HC" start="597" size="50" description="Hash Code" />
+      <udd:attribute name="OB1" start="647" size="100" description="Observações 1" />
+      <udd:attribute name="OB2" start="747" size="50" description="Observações 2" />
+      <udd:attribute name="OB3" start="797" size="100" description="Observações 3" />
+      <udd:attribute name="OB4" start="897" size="100" description="Observações 4" />
+      <!--
+      <udd:attribute name="M1" start="997" size="100" description="Mensagem 1" />
+      <udd:attribute name="M2" start="1097" size="100" description="Mensagem 2" />
+       -->
+
+      <udd:key start-key="20" name="ITEM">
+        <udd:attribute name="S" start="15" size="3" description="Sequência do Item"
+                       type="number" format="#0" />
+        <udd:attribute name="DS" start="18" size="40" description="Descrição do Item" />
+        <udd:attribute name="QT" start="58" size="11" description="Quantidade do Item"
+                       type="number" format="#00000"/>
+        <udd:attribute name="VU" start="69" size="15" description="Valor Unitário"
+                       type="number" format="#000"/>
+        <udd:attribute name="V" start="84" size="15" description="Valor Total do Item"
+                       type="number" format="#000"/>
+        <udd:attribute name="AIC" start="148" size="5" description="Aliquota ICMS do Item"
+                       type="number" format="#000"/>
+      </udd:key>
+
+      <udd:key start-key="30" name="MSG">
+        <udd:attribute name="M" start="64" size="100" description="Mensagens" />
+      </udd:key>
+    </udd:key>
+
+    <udd:key start-key="40" name="BOLETO">
+      <udd:attribute name="TP" start="3" size="2" description="Tipo de Lançamento"/>
+      <udd:attribute name="AC" start="5" size="35" description="Agência Cedente" />
+      <udd:attribute name="N-E" start="40" size="60" description="Nome / Razão Social do Emitente" />
+      <udd:attribute name="CB" start="100" size="3" description="Código do Banco"
+                     type="number" format="###" />
+      <udd:attribute name="NB" start="103" size="15" description="Nome do Banco" />
+      <udd:attribute name="CM" start="118" size="1" description="Código da Moeda"
+                     type="number" format="#" />
+      <udd:attribute name="M" start="119" size="12" description="Descrição da Moeda" />
+      <udd:attribute name="C" start="131" size="8" description="Carteira" />
+      <udd:attribute name="CBDV" start="139" size="4" description="Dígito Verificador"
+                     type="number" format="#" trim="true"/>
+      <udd:attribute name="FV" start="143" size="4" description="Fator de Vencimento"
+                     type="number" format="#" />
+      <udd:attribute name="LP1" start="147" size="70" description="Local de Pagamento 1" />
+      <udd:attribute name="LP2" start="217" size="70" description="Local de Pagamento 2" />
+      <udd:attribute name="IB1" start="287" size="70" description="Instrução Bancária 1" />
+      <udd:attribute name="IB2" start="357" size="70" description="Instrução Bancária 2" />
+      <udd:attribute name="DP" start="427" size="6" description="Data de Processamento"
+                     type="date" parse="ddMMyy" format="dd/MM/yyyy" />
+      <udd:attribute name="PT" start="436" size="1" description="Posição do Texto"
+                     type="number" format="#" />
+      <udd:attribute name="PH" start="437" size="2" description="Posição Horizontal" />
+      <udd:attribute name="PV" start="439" size="2" description="Posição Vertical" />
+      <udd:attribute name="TIMP" start="441" size="1" description="Tipo de Impressora"
+                     type="number" format="#" />
+<!--  EHO: abatimento e desconto - (mensagem ultima posição)-->
+      <udd:attribute name="IB3" start="443" size="70" description="Instrução Bancária 3" />
+      <udd:attribute name="CC" start="442" size="1" description="Conjunto de Caracters"
+                     type="number" format="#" />
+
+      <udd:key start-key="50" name="INFO">
+        <udd:attribute name="ID-E" start="5" size="14" description="CPF/CNPJ da Empresa" />
+        <udd:attribute name="CE" start="19" size="2" description="Código da Espécie" />
+        <udd:attribute name="NRD" start="21" size="6" description="Número do Documento"
+                       type="number" format="#0" />
+        <udd:attribute name="P" start="27" size="2" description="Parcela"
+                       type="number" format="##" />
+        <udd:attribute name="NN" start="29" size="30" description="Nosso Número" />
+        <udd:attribute name="CL" start="59" size="25" description="Campo Livre" />
+        <udd:attribute name="DV" start="84" size="6" description="Data de Vencimento"
+                       type="date" parse="ddMMyy" format="dd/MM/yyyy" />
+        <udd:attribute name="V" start="91" size="14" description="Valor do Documento"
+                       type="number" format="#000"/>
+        <udd:attribute name="CED" start="105" size="7" description="Código da Espécie de Documento" />
+        <udd:attribute name="CGP" start="112" size="1" description="Contrato de Garantia do Portador" />
+        <udd:attribute name="DE" start="113" size="6" description="Data de Emissão"
+                       type="date" parse="ddMMyy" format="dd/MM/yyyy" />
+        <udd:attribute name="ID-C" start="119" size="30" description="CPF/CNPJ do Cliente" />
+        <udd:attribute name="N-C" start="149" size="50" description="Nome do Cliente" />
+        <udd:attribute name="E-C" start="199" size="50" description="Endereço do Cliente" />
+        <udd:attribute name="B-C" start="249" size="12" description="Bairro do Cliente" />
+        <udd:attribute name="CEP-C" start="261" size="8" description="CEP do Cliente"
+                       type="number" format="00000000" />
+        <udd:attribute name="CI-C" start="269" size="33" description="Cidade do Cliente" />
+        <udd:attribute name="ES-C" start="302" size="2" description="Estado do Cliente" />
+        <udd:attribute name="S" start="304" size="50" description="Sacador" />
+        <udd:attribute name="IS" start="354" size="30" description="Identificação do Sacador" />
+        <udd:attribute name="IB1" start="384" size="70" description="Instrução Bancária 1" />
+        <udd:attribute name="IB2" start="454" size="70" description="Instrução Bancária 2" />
+        <udd:attribute name="IB3" start="524" size="70" description="Instrução Bancária 3" />
+        <udd:attribute name="LD" start="594" size="59" description="Linha Digitável" />
+        <udd:attribute name="CBB" start="653" size="44" description="Código de Barras do Boleto" />
+<!-- EHO: desconto e abatimento (ultima posição)-->
+        <udd:attribute name="VDA" start="698" size="14" description="Valor de desconto e abatimento" type="number" format="#000"/>
+        <udd:attribute name="FP" start="697" size="1" description="Forma de Pgto">
+          <udd:type value="" description="sem débito automático"/>
+          <udd:type value="C" description="débito automático pelo cartão de crédito"/>
+          <udd:type value="D" description="débito automático em conta corrente"/>
+        </udd:attribute>
+      </udd:key>
+
+      <!-- Detalhes da Transação (quadro de detalhes da fatura) -->
+      <udd:key start-key="60" name="ITEM">
+        <udd:attribute name="TP" start="3" size="2" description="Tipo de Lançamento"/>
+        <udd:attribute name="NF" start="5" size="7"
+                       description="Número da Nota Fiscal / Número da Negociação" />
+        <udd:attribute name="NR" start="12" size="20"
+                       description="Número da Solicitação / Pedido / Registro de Atendimento" />
+        <udd:attribute name="DS" start="32" size="40" description="Descrição" />
+        <udd:attribute name="QT" start="72" size="11" description="Quantidade"
+                       type="number" format="#00000"/>
+        <udd:attribute name="T" start="83" size="15" description="Valor Total"
+                       type="number" format="#000"/>
+        <udd:attribute name="DT" start="98" size="6" description="Data da Transação"
+                       type="date" parse="ddMMyy" format="dd/MM/yyyy" />
+        <udd:attribute name="LO" start="104" size="30" description="Local" />
+        <udd:attribute name="NRP" start="134" size="2" description="Número da Parcela" />
+        <udd:attribute name="QTP" start="136" size="2" description="Quantidade de Parcelas" />
+        <udd:attribute name="V" start="138" size="15" description="Valor a Pagar"
+                       type="number" format="#000"/>
+
+        <udd:key start-key="70" name="AP">
+          <udd:attribute name="IMEI" start="5" size="20" description="IMEI" />
+          <udd:attribute name="SIM" start="25" size="20" description="SIM Card" />
+          <udd:attribute name="FID" start="45" size="20" description="Fleet ID" />
+          <udd:attribute name="TEL" start="65" size="20" description="Telefone" />
+        </udd:key>
+      </udd:key>
+    </udd:key>
+
+    <udd:key start-key="80" name="BOLETO_ARRECADACAO">
+      <udd:attribute name="TP" start="3" size="2" description="Tipo de Lançamento"/>
+      <udd:attribute name="M1" start="5" size="140" description="Mensagem 1"/>
+      <udd:attribute name="M2" start="145" size="140" description="Mensagem 2"/>
+      <udd:attribute name="M3" start="285" size="90" description="Mensagem 3"/>
+      <udd:attribute name="M4" start="375" size="90" description="Mensagem 4"/>
+      <udd:attribute name="M5" start="465" size="140" description="Mensagem 5"/>
+      <udd:attribute name="M6" start="605" size="140" description="Mensagem 6"/>
+      <udd:attribute name="M7" start="745" size="140" description="Mensagem 7"/>
+      <udd:attribute name="M8" start="885" size="140" description="Mensagem 8"/>
+      <udd:attribute name="N-C" start="1025" size="40" description="Nome do Cliente"/>
+      <udd:attribute name="ID-DA" start="1065" size="26" description="Identificação de débito automático"/>
+      <udd:attribute name="MR" start="1091" size="8" description="Mês de referência"/>
+      <udd:attribute name="DE" start="1099" size="6" description="Data de Emissão"
+      				 type="date" parse="ddMMyy" format="dd/MM/yyyy"/>
+      <udd:attribute name="DV" start="1105" size="6" description="Data de Vencimento"
+      				 type="date" parse="ddMMyy" format="dd/MM/yyyy"/>
+      <udd:attribute name="V" start="1111" size="14" description="Valor Original"/>
+      <udd:attribute name="LD" start="1125" size="55" description="Linha digitavel"/>
+  	  <udd:attribute name="CBB" start="1180" size="44" description="Codigo de Barras do boleto"/>
+    </udd:key>
+
+  </udd:key>
+
+</udd:document>

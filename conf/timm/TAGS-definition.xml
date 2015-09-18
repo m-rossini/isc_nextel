@@ -1,0 +1,99 @@
+    <sdd:key start-key="UNH" name="UNH" separator="+" skip="true"></sdd:key>
+    <sdd:key start-key="FII" name="FII" separator="+" skip="true"></sdd:key>
+    <sdd:key start-key="CUX" name="CUX" separator="+" skip="true"></sdd:key>
+    <sdd:key start-key="LOC" name="LOC" separator="+" skip="true"></sdd:key>
+    <sdd:key start-key="PAT" name="PAT" separator="+" skip="true"></sdd:key>
+    <sdd:key start-key="PCD" name="PCD" separator="+" skip="true"></sdd:key>
+    <sdd:key start-key="PIA" name="PIA" separator="+" skip="true"></sdd:key>
+    <sdd:key start-key="PRI" name="PRI" separator="+" skip="true"></sdd:key>
+    <sdd:key start-key="CTA" name="CTA" separator="+" skip="true"></sdd:key>
+    <sdd:key start-key="DOC" name="DOC" separator="+" skip="true"></sdd:key>
+    <sdd:key start-key="UNS" name="UNS" separator="+" skip="true"></sdd:key>
+    <sdd:key start-key="UNT" name="UNT" separator="+" skip="true"></sdd:key>
+    <sdd:key start-key="ALC" name="ALC" separator="+" skip="true"></sdd:key>
+    <sdd:key start-key="COM" name="COM" separator="+" skip="true"></sdd:key>
+  
+	<sdd:key start-key="BGM" name="BGM" separator="+">
+	  <element index="02" name="DOCUMENT" separator=":" description="document/message name">
+	    <attribute index="01" name="INVOICE" description="commercial invoice" fixed="380" />
+        <attribute index="04" name="TYPE" description="document type" />
+	  </element>
+	  <element index="03" name="TELCO" description="TELCO short name/aa/nnnnnnnnnnMMYYYY"
+	    separator="/">
+	    <attribute index="02" name="CYCLE" description="aa = bill cycle number (always 2 bytes)" />
+	  </element>
+	</sdd:key>
+
+	<sdd:key start-key="DTM" name="DTM" separator="+" >
+    <element index="02" name="DATE_TIME" separator=":" description="Date/time/period">        
+	    <attribute index="01" name="QUALIFIER" description="date/time period qualifier"/>     
+	    <element index="02" name="DATE" show-text="true" 
+                 description="Date with format specified in next subfield"/>
+	    <attribute index="03" name="FORMAT" description="Date format"/>            
+		</element>  			    
+	</sdd:key>
+	
+	<sdd:key start-key="FTX" name="FTX" separator="+">
+      <attribute index="02" name="QUALIFIER" description="Text subject qualifier"/>        
+      <element name="LITERAL" index="05" separator=":" description="Text literal">
+          <attribute index="01" name="TEXT1" description="Free text" trim="false"/>
+          <attribute index="02" name="TEXT2" description="Free text" trim="false"/>        
+          <attribute index="03" name="TEXT3" description="Free text" trim="false"/>
+          <attribute index="04" name="TEXT4" description="Free text" trim="false"/>    
+          <attribute index="05" name="TEXT5" description="Free text" trim="false"/>
+      </element>	
+	</sdd:key>
+
+	<sdd:key start-key="NAD" name="NAD" separator="+">
+		<attribute index="02" name="TYPE" description="Type"/>        
+		<element index="05" name="PARTY" separator=":" description="party name">        
+			<attribute index="01" name="NAME" description="first address line / company name"  trim="false"/>        
+			<attribute index="02" name="ADDRESS1" description="second address line / company address first line"  trim="false"/>        
+			<attribute index="03" name="ADDRESS2" description="third address line / company address second line"  trim="false"/>        
+			<attribute index="04" name="ADDRESS3" description="fourth address line / company address thrid line"  trim="false"/>        
+			<attribute index="05" name="LINE" description="firth address line"  trim="false"/>    
+		</element> 	
+	</sdd:key>
+
+	<sdd:key start-key="QTY" name="QTY" separator="+" >
+		<element index="02" name="DETAIL" separator=":" description="quantity details">        
+			<attribute index="01" name="TYPE" description="type" />   
+			<attribute index="02" name="VOLUME" description="Quantity/Usage volume in units of measure"/>        
+		</element>	
+	</sdd:key>
+
+	<sdd:key start-key="IMD" name="IMD" separator="+" >
+		<element index="04" name="ITEM" separator=":" description="Service code">
+			<attribute index="01" name="CODE" description="Service Code meaning"/>
+			<attribute index="04" name="SHORT_VALUE" description="Short Value"/>
+			<attribute index="05" name="FULL_VALUE" description="Full Value" trim="false"/>
+		</element>
+	</sdd:key>
+
+	<sdd:key start-key="TAX" name="TAX" separator="+" >
+		<attribute index="02" name="TYPE" description="type"/>            
+		<element index="03" name="DUTY_TYPE" separator=":" description="duty/tax/fee type">        
+			<attribute index="01" name="TYPE" description="type" fixed="VAT"/>        
+			<attribute index="04" name="NAME" description="tax identifier (tax name)"/>    
+		</element>    
+		<element index="06" name="DETAIL" separator=":" description="duty/tax/fee detail">        
+			<attribute index="01" name="CODE" description="tax legal code"/>        
+			<attribute index="04" name="PERCENT" description="tax rate (in percent)"/>        
+			<attribute index="05" name="BASE" description="tax rate base"/>            
+		</element>    
+		<attribute index="07" name="GENERALLY" description="generally 'S', 'Z' in case an item is free of taxes"/>        
+	</sdd:key>
+				
+	<sdd:key start-key="RFF" name="RFF" separator="+">
+		<element index="02" name="REFERENCE" separator=":" description="reference">        
+			<attribute index="01" name="CODE" description="Code"/>
+			<attribute index="02" name="VALUE1" description="if code contains"/>        
+		</element>	
+	</sdd:key>
+    
+    <sdd:key start-key="MOA" name="MOA" separator="+">
+      <element index="02" name="AMOUNT" separator=":" description = "Monetary amount">        
+        <attribute index="01" name="TYPE" description="Amount Identify meaning"/>    
+        <attribute index="02" name="VALUE" description="monetary amount"/>        
+      </element>  
+    </sdd:key>

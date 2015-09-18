@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<INVOICE>
+
+  <!-- Todos os novos itens, bem como boletos e NF, estarão dentro desta TAG -->
+  <BILL>
+    
+    <!-- Extrato Unificado -->
+    <EXTRATO>
+        
+      <!-- Demonstrativo: Balanço + Fatura Atual -->
+      <DEMO T="{Total Geral do Demonstrativo}"
+            IM="{�?ndice para Mensagens}">
+    
+        <!-- Demonstrativo de Pagamentos (Balanço) -->
+        <BAL T="{Somatória dos itens}"
+             IM="{�?ndice para Mensagens}">
+          <!-- Informações de Saldos Devedores -->
+          <DEV DT="Data dos Saldos" 
+               T="{Somatória dos itens}"
+               IM="{�?ndice para Mensagens}">
+            <!-- Item -->
+            <IT DS="{Descrição do Lançamento}" 
+                V="{Saldo Devedor}"/>
+          </DEV>
+          <!-- Histórico de Pagamentos -->
+          <PGTO DT="Data dos pagamentos" 
+                T="{Somatória dos itens}"
+                IM="{�?ndice para Mensagens}">
+            <!-- Item -->
+            <IT DS="{Descrição do Lançamento}" 
+                VF="{Valor Faturado}"
+                VP="{Valor Pago}" 
+                V="{Saldo Devedor}"/>
+          </PGTO>
+        </BAL>
+          
+        <!-- Fatura Atual -->
+        <ATUAL T="{Somatória dos itens}"
+               IM="{�?ndice para Mensagens}">
+          <!-- Cada Grupo em referente a uma data + vcto, conforme 
+               modelo - ex: "Maio de 2006 - Vencimento em xx/xx/xx" -->
+          <GRP DT="Data do Grupo" 
+               DV="Data de Vencimento">
+            <!-- Item -->
+            <IT DS="{Descrição do Lançamento}" 
+                NB="{Número do Boleto}" 
+                V="{Total}"/>
+          </GRP>
+        </ATUAL>
+    
+      </DEMO>
+                
+      <!-- Lançamentos Futuros -->
+      <FUT DT="{Data 'Vencimento Após'}" 
+           T="{Somatória dos itens}"
+           IM="{�?ndice para Mensagens}">
+        <!-- Item -->
+        <IT DS="{Descrição do Lançamento}" 
+            NRP ="{No de Parcelas}"
+            NRPV="{No de Parcelas a Vencer}" 
+            VPV="{Valor da Parcela a Vencer}"
+            V="{Saldo a Vencer}"/>
+      </FUT>
+    
+      <!-- Mensagens: o atributo IM pode não existir -->
+      <MSGS>
+        <M IM="{�?ndice para Mensagens}">Mensagem 1</M>
+        <M IM="{�?ndice para Mensagens}">Mensagem 2</M>
+        <M IM="{�?ndice para Mensagens}">...</M>
+        <M IM="{�?ndice para Mensagens}">Mensagem n</M>
+      </MSGS>
+          
+    </EXTRATO>
+        
+    <!-- Seção "Informações Importantes" -->
+    <INFO>
+      <I>Qualquer texto aqui 1</I>
+      <I>Qualquer texto aqui 2</I>
+      <I>...</I>
+      <I>Qualquer texto aqui n</I>
+    </INFO>
+        
+    <!-- Nota-Fiscal e Boleto de Telecomunicações -->
+    <TELECOM>
+      <NF NR="{Número da Nota Fiscal}" 
+          SR="{Série da NF}"
+          DE="{Data de Emissão}"
+          DV="{Data de Vencimento}"
+          DI="{Data Inicial do Período}"
+          DF="{Data Final do Período}"
+          BCIC="{Base de Cálculo do ICMS}"
+          AIC="{Alíquota do ICMS}"
+          VIC="{Valor do ICMS}"
+          V="{Valor Total da NF}"
+          HC="{Hash Code da NF, reservado ao fisco}"
+          M1="Mensagem da Nota Fiscal 1"
+          M2="Mensagem da Nota Fiscal 2">
+        <CLIENTE N="{Nome / Razão Social}" 
+                 NR="{Número do Cliente}"
+                 ID="{CNPJ ou CPF}"
+                 IE="{Inscrição Estadual}"
+                 E="{Endereço Completo (Rua, No, Complemento, Bairro)}" 
+                 CEP="{CEP}"
+                 CI="{Cidade}"
+                 ES="{Estado / UF}"/>
+        <!-- Observações -->
+        <OBS>
+          <O>Observação 1</O>
+          <O>Observação 2</O>
+          <O>...</O>
+          <O>Observação n</O>
+        </OBS>
+        <!-- Mensagens -->
+        <MSGS>
+          <M>Mensagem 1</M>
+          <M>Mensagem 2</M>
+          <M>...</M>
+          <M>Mensagem n</M>
+        </MSGS>
+        <ITENS>
+          <IT S="{Número/Seqüência}"
+              DS="{Descrição}"
+              QT="{Quantidade}"
+              VU="{Valor Unitário}"
+              V="{Valor Total}"
+              AIC="{Alíquota do ICMS}"/>
+        </ITENS>
+      </NF>
+      
+      <!-- A tag boleto abaixo foi descontinuada por conta do projeto de arrecadação bancária
+      	   Data: 09/06/2008      	   
+      <BOLETO NB="{Nome do Banco - ex: 'BANCO ITAU S/A'}" 
+              CB="{Código do Banco - ex: '341-7'}" 
+              LD="{Linha digitável do Código de Barras}"
+              CBB="{Código de Barras (Ex: 'WwnnNWwNNwWnNN')}"
+              LP1="{Local de Pagamento - linha 1}"
+              LP2="{Local de Pagamento - linha 2}"
+              DV="{Data de Vencimento}"
+              S="{Cedente Sacador}"
+              AC="{Agência Código Cedente}"
+              DD="{Data do Documento}"
+              NRD="{Número do Documento}"
+              CE="{Código da Espécie do Documento}"
+              DM="{Data do Movimento/Emissão}"
+              NN="{Nosso Número}"
+              C="{Carteira}"
+              M="{Descrição da Moeda – 'R$'}"
+              V="{Valor do Documento}"
+              VDA="{Valor de desconto e abatimento}">
+              
+        <SACADO N="{Nome / Razão Social}"
+                E="{Endereço}"
+                CEP="{CEP}"
+                CI="{Cidade}"
+                ES="{Estado / UF}"/>
+        <INSTR_BANC>
+          <I>Instrução Bancária 1</I>
+          <I>Instrução Bancária 2</I>
+          <I>...</I>
+          <I>Instrução Bancária n</I>
+        </INSTR_BANC>
+      </BOLETO>      
+      -->
+      
+      <!-- Novo Boleto de Arrecadação Bancária, substitui o boleto de Serviços de Telecomunicações -->
+      <BOLETO_ARRECADACAO NC="IN BITS IND E COM DE BIJOUT E AVIAM LTDA" 
+      					  IDDA="{Identificação de Débito Automático (Ex: '110118240-8')}"
+      					  MR="{Mês de Referência (Ex: 'JUN/2008')}" 
+      					  DE="{Data de Emissão}" 
+              			  DV="{Data de Vencimento}"
+      					  V="{Valor do Documento}" 
+						  LD="{Linha digitável do Código de Barras}"
+              			  CBB="{Código de Barras (Ex: 'WwnnNWwNNwWnNN')}">
+		<MSGS>
+          <M1>Mensagem 1</M1>
+          <M2>Mensagem 2</M2>
+          <M3>Mensagem 3</M3>
+          <M4>Mensagem 4</M4>
+        </MSGS>
+      </BOLETO_ARRECADACAO>              			  
+      
+    </TELECOM>
+        
+    <!-- Quadro descritivo e Boleto de Compras -->
+    <COMPRAS T="{Somatória de 'TOTAL'}" 
+             V="{Somatória de 'VALOR'}">
+      <ITENS T="{Somatória de 'TOTAL'}" 
+             V="{Somatória de 'VALOR'}">
+        <!-- Item -->
+        <IT DT="{Data do Evento}"
+            NR="{Número da Solicitação / Pedido / Registro de Atendimento}"
+            DS="{Descrição}"
+            QT="{Quantidade}"
+            LO="{Local}"
+            NF="{Número da NF}"
+            T="{Valor Total}"
+            V="{Valor a Pagar}"
+            NRP="{Número da Parcela}"
+            QTP="{Quantidade de Parcelas}">
+          <AP IMEI="{IMEI}"
+              SIM="{SIM Card}"
+              FID="{Fleet ID}"
+              TEL="{Telefone}"/>
+        </IT>
+	      <BOLETO NB="{Nome do Banco - ex: 'BANCO ITAU S/A'}" 
+	              CB="{Código do Banco - ex: '341-7'}" 
+	              LD="{Linha digitável do Código de Barras}"
+	              CBB="{Código de Barras (Ex: 'WwnnNWwNNwWnNN')}"
+	              LP1="{Local de Pagamento - linha 1}"
+	              LP2="{Local de Pagamento - linha 2}"
+	              DV="{Data de Vencimento}"
+	              S="{Cedente Sacador}"
+	              AC="{Agência Código Cedente}"
+	              DD="{Data do Documento}"
+	              NRD="{Número do Documento}"
+	              CE="{Código da Espécie do Documento}"
+	              DM="{Data do Movimento/Emissão}"
+	              NN="{Nosso Número}"
+	              C="{Carteira}"
+	              M="{Descrição da Moeda – 'R$'}"
+	              V="{Valor do Documento}"
+	              VDA="{Valor de desconto e abatimento}">
+	              
+	        <SACADO N="{Nome / Razão Social}"
+	                E="{Endereço}"
+	                CEP="{CEP}"
+	                CI="{Cidade}"
+	                ES="{Estado / UF}"/>
+	        <INSTR_BANC>
+	          <I>Instrução Bancária 1</I>
+	          <I>Instrução Bancária 2</I>
+	          <I>...</I>
+	          <I>Instrução Bancária n</I>
+	        </INSTR_BANC>
+	      </BOLETO>
+      </ITENS>
+    </COMPRAS>
+      
+    <!-- Quadro descritivo e Boleto de Notas de Débito / Multas -->
+    <MULTAS V="{Somatória de 'VALOR'}">
+      <ITENS V="{Somatória de 'VALOR'}">
+        <IT DT="{Data do Evento}"
+            NR="{Número do Registro de Antendimento}"
+            DS="{Descrição}"
+            V="{Valor a Pagar}">
+          <AP IMEI="{IMEI}"
+              SIM="{SIM Card}"
+              FID="{Fleet ID}"
+              TEL="{Telefone}"/>
+        </IT>
+        <!-- Aqui existirá uma TAG "BOLETO" idêntica à descrita na TAG "COMPRAS" -->
+        <BOLETO>...</BOLETO>
+      </ITENS>
+    </MULTAS>
+        
+    <!-- Quadro descritivo e Boleto de Negociações -->
+    <NEGOC T="{Somatória de 'TOTAL'}" 
+           V="{Somatória de 'VALOR'}">
+      <ITENS T="{Somatória de 'TOTAL'}" 
+             V="{Somatória de 'VALOR'}">
+        <IT DT="{Data do Evento}"
+            NR="{Número da Negociação}"
+            T="{Valor Total}"
+            V="{Valor a Pagar}"
+            NRP="{Número da Parcela}"
+            QTP="{Quantidade de Parcelas}"/>
+            <!-- NRT="{Número do Título}" -->
+            <!-- Aqui existirá uma TAG "BOLETO" idêntica à descrita na TAG "COMPRAS" -->
+           <BOLETO>...</BOLETO>
+      </ITENS>
+    </NEGOC>
+
+  </BILL>
+
+  <CUSTOMER>
+    A partir deste ponto, não haverá mudanças no XML.
+  </CUSTOMER>
+  
+</INVOICE>

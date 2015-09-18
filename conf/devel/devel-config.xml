@@ -1,0 +1,332 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<data-aware>
+  <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="FILE" class="biz.minaret.log4j.DatedFileAppender">
+      <param name="Threshold" value="info" />
+      <param name="Directory" value="log" />
+      <param name="Prefix" value="devel-" />
+      <param name="Suffix" value=".log" />
+      <param name="Append" value="true" />
+      <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%t] %m%n" />
+      </layout>
+    </appender>
+    <root>
+      <priority value="info" />
+      <appender-ref ref="FILE" />
+    </root>
+    <category name="org.apache.fop">
+      <priority value="warn"/>
+    </category>
+  </log4j:configuration>
+
+  <management:configuration xmlns:management="http://www.auster.com.br/dware/management/">
+    <management:register use-default="false" class-name="br.com.auster.dware.monitor.RegisterMBeanMX4J"
+                         ip-address="localhost" tcp-port="9876" jndi-name="jmxconnector" />
+  </management:configuration>
+
+  <dw:configuration name="invoice" xmlns:dw="http://www.auster.com.br/dware/">
+
+    <dw:mbean mbean-component="dware" mbean-type="engine"
+              mbean-class-name="br.com.auster.dware.monitor.dware.JMXDWare" pass-reference="true" />
+
+    <dw:graph-manager>
+      <dw:mbean mbean-component="GraphManager"
+        mbean-class-name="br.com.auster.dware.monitor.manager.JMXGraphManager"
+        pass-reference="true" />
+
+      <dw:mbean mbean-component="graph"
+        mbean-class-name="br.com.auster.dware.monitor.graph.JMXGraph" pass-reference="true" />
+
+      <dw:local-graph-group name="local-1" graphs-per-processor="1" max-weight="-1">
+        <dw:mbean mbean-component="graph-group" mbean-type="local-1"
+          mbean-class-name="br.com.auster.dware.monitor.manager.JMXPriorityWishGraphGroup"
+          pass-reference="true" />
+      </dw:local-graph-group>
+
+      <dw:request-forwarder class-name="br.com.auster.dware.manager.PriorityQueueReqForwarder" />
+      
+      <!--
+      <dw:checkpoint class-name="br.com.auster.dware.manager.checkpoint.FileCheckpoint" 
+                     file-name="devel-checkpoint.txt"
+                     max-req-fails="2" requeue-sleep-milis="5000"/>
+      -->
+      <!-- 
+      <dw:checkpoint class-name="br.com.auster.dware.manager.checkpoint.SQLCheckpoint" 
+                     max-req-fails="2" requeue-sleep-milis="5000"
+                     database-name="bscs">
+        <query-all statement-name="chkpLoadAllRequests">
+          <columns transaction-id="1" request-id="2" status="3"/>
+        </query-all>
+        <query-by-transaction statement-name="chkpLoadAllByTransaction">
+          <columns request-id="1" status="2"/>
+          <params transaction-id="1"/>
+        </query-by-transaction>
+        <insert statement-name="chkpInsertRequest">
+          <params transaction-id="1" request-id="2" status="3"/>
+        </insert>
+        <update statement-name="chkpUpdateRequest">
+          <params transaction-id="2" request-id="3" status="1"/>
+        </update>
+      </dw:checkpoint>
+      -->
+    </dw:graph-manager>
+
+    <dw:graph-design>
+
+      <dw:filter name="BillFromFile" 
+                 class-name="br.com.auster.nextel.isc.filter.InputFromGelFilter">
+        <dw:config buffer-size="262144" file-cache-size="20" 
+                         filename="input/gel.txt" request-key-field="custCode">
+          <dw:builder bufferSize="262144" encoding="ISO-8859-1" maxRecordSize="32768">
+                  <record-key position="1" length="1" trim="false" new-request-pattern="0" />
+                  <request-key record-key-pattern="0">
+                    <field name="key" position="1220" length="24" type="java.lang.String" />
+                  </request-key>
+                </dw:builder>
+        </dw:config>
+        <dw:connect-to name="BillPipe" />
+      </dw:filter>
+      
+      <dw:filter name="BillPipe" class-name="br.com.auster.dware.filter.PipeFilter">
+        <dw:connect-to name="Bill2XML" />
+      </dw:filter>
+
+      <dw:filter name="Bill2XML" class-name="br.com.auster.dware.filter.XMLReaderFilter">
+        <dw:config class-name="br.com.auster.udd.reader.SimpleFlatFileReader">
+          <dw:xml-reader udd-path="conf/gel/gel-definition.xml" 
+                         encrypted="false"
+                         quiet-missing="true" />
+        </dw:config>
+        <dw:connect-to name="BillJoiner" />
+      </dw:filter>
+
+      <dw:filter name="BillJoiner" class-name="br.com.auster.dware.filter.XMLManagerFilter">
+        <dw:config cached-mode="false" keep-order="false" initial-tag="BILL" />
+        <dw:connect-to name="XMLJoiner" />
+      </dw:filter>
+
+      <dw:filter name="InputFromSQL" class-name="br.com.auster.nextel.isc.filter.SQLMultiRowInputFilter">
+        <config buffer-size="262244">
+          <database pool-name="bscs" sql-name="TIMMDocument" />     
+          <parameters>
+            <parameter name="account"/>
+          </parameters>
+          <columns>
+            <column column="1"/>
+          </columns>
+        </config>
+        <dw:connect-to name="Pipe" />
+      </dw:filter>
+
+     <dw:filter name="Pipe" class-name="br.com.auster.dware.filter.PipeFilter">
+        <dw:connect-to name="Invoice2XML" />
+      </dw:filter>
+
+      <dw:filter name="Invoice2XML" class-name="br.com.auster.dware.filter.XMLReaderFilter">
+        <dw:config class-name="br.com.auster.udd.reader.TaggedFileReader">
+          <dw:xml-reader udd-path="conf/timm/timm-definition.xml" 
+                         encrypted="false"  
+                         quiet-missing="true"/>
+        </dw:config>
+        <dw:connect-to name="TIMMFixer" />
+      </dw:filter>
+
+      <dw:filter name="TIMMFixer"
+                 class-name="br.com.auster.dware.filter.ContentHandlerPipeFilter">
+        <dw:config class-name="br.com.auster.nextel.sax.TIMMFixerContentHandlerPipe">
+          <dw:content-handler/>
+        </dw:config >
+        <dw:connect-to name="XML2ContentHandler" />
+      </dw:filter>
+
+      <dw:filter name="XML2ContentHandler"
+                 class-name="br.com.auster.dware.filter.ContentHandlerPipeFilter">
+        <dw:config class-name="br.com.auster.nextel.sax.TIMMContentHandlerPipe">
+          <dw:content-handler>
+            <dw:xml-paths>
+              <dw:path value="/TIMM/UNB/BGM/DOCUMENT" 
+                       handler="br.com.auster.nextel.sax.TIMMTypeSelectorHandler"/>
+              <dw:path value="/TIMM/UNB" 
+                       handler="br.com.auster.nextel.sax.TIMMBalanceHandler"/>
+              <dw:path value="/TIMM/UNB"
+                       handler="br.com.auster.nextel.sax.TIMMSummsheetHandler"/>
+              <dw:path value="/TIMM/UNB/LIN1/"
+                       handler="br.com.auster.nextel.sax.ContractOCCHandler"/>
+              <dw:path value="/TIMM/UNB/LIN1/LIN2" 
+                       handler="br.com.auster.nextel.sax.ContractSummaryHandler"/>
+              <dw:path value="/TIMM/UNB/LIN1/LIN2/LIN3/"   
+                       handler="br.com.auster.nextel.sax.ContractPackagesListHandler"/>
+              <dw:path value="/TIMM/UNB/LIN1/LIN2/LIN3/LIN4/" 
+                       handler="br.com.auster.nextel.sax.ContractServicesHandler"/>
+              <dw:path value="/TIMM/UNB/LIN1/LIN2/LIN3/XCD/"   
+                       handler="br.com.auster.nextel.sax.ContractUsageDetailHandler"/>
+            </dw:xml-paths>
+          </dw:content-handler>
+        </dw:config>
+        <dw:connect-to name="InvoiceXSL"/>
+      </dw:filter>
+
+      <dw:filter name="InvoiceXSL" class-name="br.com.auster.dware.filter.XSLFilter">
+        <dw:config>
+          <dw:xsl-file path="conf/xml/bgh-invoice.xsl" encrypted="false"/>
+        </dw:config>
+        <dw:connect-to name="XMLJoiner"/>
+      </dw:filter>
+
+      <dw:filter name="XMLJoiner" class-name="br.com.auster.dware.filter.XMLManagerFilter">
+        <dw:config cached-mode="false" keep-order="false" initial-tag="INVOICE" />
+        <dw:connect-to name="XMLSplitter" />
+      </dw:filter>
+      
+      <dw:filter name="XMLSplitter" class-name="br.com.auster.dware.filter.XMLManagerFilter">
+        <dw:connect-to name="XML2FO"/>
+        <dw:connect-to name="XMLSerializer"/>
+        <dw:connect-to name="XML2TXT"/>
+      </dw:filter>
+      
+      <dw:filter name="XMLSerializer"
+        class-name="br.com.auster.dware.filter.XMLSerializerFilter">
+        <dw:config method="xml" encoding="ISO-8859-1" />
+        <dw:connect-to name="XML2File" />
+      </dw:filter>
+
+      <dw:filter name="XML2File" class-name="br.com.auster.dware.filter.OutputToFile">
+         <dw:config prefix="output/" suffix=".xml">
+          <dw:filename>
+            <dw:token align="right" width="2" fill-char="0">
+              <dw:insert-request-field name="cycle" />
+            </dw:token>
+            <dw:token>/</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="year" />
+            </dw:token>
+            <dw:token>/</dw:token>
+            <dw:token align="right" width="2" fill-char="0">
+              <dw:insert-request-field name="month" />
+            </dw:token>
+            <dw:token>/</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="costCenter" />
+            </dw:token>
+            <dw:token>/CUST</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="account" />
+            </dw:token>
+          </dw:filename>
+        </dw:config>
+      </dw:filter>
+   
+     <dw:filter name="XML2FO" class-name="br.com.auster.dware.filter.XSLFilter">
+        <dw:config>
+          <dw:xsl-file path="conf/pdf/nextel_fatura.xsl" encrypted="false"/>
+        </dw:config>
+        <dw:connect-to name="FO2FOP"/>
+      </dw:filter>
+
+      <dw:filter name="FO2FOP" class-name="br.com.auster.dware.filter.FOPFilter">
+        <dw:config/>
+        <dw:connect-to name="FOP2File" />
+      </dw:filter>
+
+      <dw:filter name="FOP2File" class-name="br.com.auster.dware.filter.OutputToFile">
+        <dw:config prefix="output/" suffix=".pdf" format="pdf">
+          <dw:filename>
+            <dw:token align="right" width="2" fill-char="0">
+              <dw:insert-request-field name="cycle" />
+            </dw:token>
+            <dw:token>/</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="year" />
+            </dw:token>
+            <dw:token>/</dw:token>
+            <dw:token align="right" width="2" fill-char="0">
+              <dw:insert-request-field name="month" />
+            </dw:token>
+            <dw:token>/</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="costCenter" />
+            </dw:token>
+            <dw:token>/CUST</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="account" />
+            </dw:token>
+          </dw:filename>
+        </dw:config>
+      </dw:filter>
+
+      <dw:filter name="XML2TXT" class-name="br.com.auster.dware.filter.XSLFilter">
+        <dw:config>
+          <dw:xsl-file path="conf/txt/nextel_fatura.xsl" encrypted="false"/>
+        </dw:config>
+        <dw:connect-to name="TXT2File"/>
+      </dw:filter>
+
+      <dw:filter name="TXT2File" class-name="br.com.auster.dware.filter.OutputToFile">
+        <dw:config prefix="output/" suffix=".txt">
+          <dw:filename>
+            <dw:token align="right" width="2" fill-char="0">
+              <dw:insert-request-field name="cycle" />
+            </dw:token>
+            <dw:token>/</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="year" />
+            </dw:token>
+            <dw:token>/</dw:token>
+            <dw:token align="right" width="2" fill-char="0">
+              <dw:insert-request-field name="month" />
+            </dw:token>
+            <dw:token>/</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="costCenter" />
+            </dw:token>
+            <dw:token>/CUST</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="account" />
+            </dw:token>
+          </dw:filename>
+        </dw:config>
+      </dw:filter>
+
+    </dw:graph-design>
+  </dw:configuration>
+
+  <requests:configuration xmlns:requests="http://www.auster.com.br/dware/requests/">
+    <!-- error-listener class-name="br.com.auster.dware.request.DefaultRequestErrorListener"/ -->
+    <builder-chain name="chain">
+      <builder name="builder" 
+               class-name="br.com.auster.nextel.isc.request.sql.SQLRequestBuilder">
+        <config>
+          <database pool-name="bscs" sql-name="AllCustomers" />
+          <requests>
+            <weight column="3" />
+            <id column="1" />
+            <fields> 
+              <field name="account"    column="1" />
+              <field name="custCode"   column="2" />
+              <field name="timestamp"  column="4" />
+              <field name="year"       column="5" />
+              <field name="month"      column="6" />
+              <field name="costCenter" column="7" />
+            </fields>
+          </requests>  
+          <static-attributes>
+            <static name="mode" type="java.lang.String">devel</static>
+            <static name="cycle" type="java.lang.String">00</static>
+          </static-attributes>
+        </config>
+      </builder>    
+    </builder-chain>
+  </requests:configuration> 
+  
+  <sql:configuration xmlns:sql="http://www.auster.com.br/common/sql/">
+    <sql:database name="bscs" config-resource="bscs-devel">
+      <sql:statements path="conf/sql/bscs-devel-statements.xml"/>
+      <sql:statements path="conf/sql/checkpoint-devel-statements.xml"/>
+    </sql:database>
+    <sql:database name="mibas" config-resource="bscs-devel">
+      <sql:statements path="conf/sql/mibas-devel-statements.xml"/>
+    </sql:database>
+  </sql:configuration> 
+                     
+</data-aware>

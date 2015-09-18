@@ -1,0 +1,36 @@
+.bolRowHeight {
+  height: 23px;
+}
+
+#bolRow {
+  vertical-align: top;
+}
+
+.bolName {
+  font-size: 5.5pt;
+  padding-left: 1mm;
+  padding-top: 0.5mm;
+}
+
+.bolValue {
+  font-weight: bold;
+  font-size: 6.5pt;
+  padding-left: 1mm;
+  padding-top: 1px;
+}
+
+
+.centeredBolName {
+  font-size: 5.5pt;
+  padding-left: 1mm;
+  padding-top: 0.5mm;
+  text-align: center;
+}
+
+.centeredBolValue {
+  font-weight: bold;
+  font-size: 6.5pt;
+  padding-left: 1mm;
+  padding-top: 1px;
+  text-align: center;
+}

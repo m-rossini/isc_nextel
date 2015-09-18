@@ -1,0 +1,1 @@
+Os diretórios dentro desta pasta não devem ser utilizados, as versões atuais deles estão em um nível acima, seguindo a estrutura utilizada pela nextel.

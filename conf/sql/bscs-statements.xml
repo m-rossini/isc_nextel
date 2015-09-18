@@ -1,0 +1,289 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<root>
+  <sql:configuration xmlns:sql="http://www.auster.com.br/common/sql/">
+    <sql:statements>
+
+    <sql:statement name="AllCustomers">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   '[%CYCLE%]'                         AS "cycle",
+                   'N'                                 AS "ignore_timm",
+                   'S'                                 AS "process_gel"
+            FROM customer_all ca, sysadm.doc_all_[%CYCLE%] da
+            WHERE ca.customer_id = da.customer_id
+            GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                     ca.costcenter_id
+        </sql:query>
+    </sql:statement>
+
+    <sql:statement name="AllEmployees">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   bc.cycle_code                       AS "cycle",
+                   bc.bill_suppress                    AS "ignore_timm",
+                   bc.generate_invoice                 AS "process_gel"
+            FROM customer_all ca, sysadm.doc_all_[%CYCLE%] da,
+                 cai.nxt_ar_bscs_bill_customers bc
+            WHERE ca.prgcode = 3
+              AND ca.customer_id = da.customer_id
+              AND da.customer_id = bc.bscs_customer_id
+              --
+              -- EHO: nao contemplar o ciclo se o mesmo for diferente de 07 e 08 (por apresentarem a mesma data de corte)
+              --
+              AND ((bc.cycle_code = '[%CYCLE%]' and bc.cycle_code in ('07','08')) or (bc.cycle_code not in ('07','08')))
+              -- 
+              AND (bc.bill_suppress = 'N' OR bc.generate_invoice = 'S')
+              AND bc.date_created = da.date_created
+            GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                     ca.costcenter_id, bc.cycle_code, 
+                     bc.bill_suppress, bc.generate_invoice
+        </sql:query>
+    </sql:statement>
+
+    <sql:statement name="AllCustomersAllEmployees">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   bc.cycle_code                       AS "cycle",
+                   bc.bill_suppress                    AS "ignore_timm",
+                   bc.generate_invoice                 AS "process_gel",
+                   ca.prgcode
+            FROM customer_all ca, sysadm.doc_all_[%CYCLE%] da,
+                 cai.nxt_ar_bscs_bill_customers bc
+            WHERE ((bc.bill_suppress = 'N' AND ca.prgcode &lt;&gt; 3) 
+                   OR (ca.prgcode = 3) OR (bc.generate_invoice = 'S'))
+              AND ca.customer_id = da.customer_id
+              AND da.customer_id = bc.bscs_customer_id
+              --
+              -- EHO: nao contemplar o ciclo se o mesmo for diferente de 07 e 08 (por apresentarem a mesma data de corte)
+              --
+              AND ((bc.cycle_code = '[%CYCLE%]' and bc.cycle_code in ('07','08')) or (bc.cycle_code not in ('07','08')))
+              -- 
+              AND bc.date_created = da.date_created
+            GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                     ca.costcenter_id, bc.cycle_code, ca.prgcode,
+                     bc.bill_suppress, bc.generate_invoice
+        </sql:query>
+    </sql:statement>
+    
+    <sql:statement name="AllNoEmployeesNoFebraban">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   bc.cycle_code                       AS "cycle",
+                   bc.bill_suppress                    AS "ignore_timm",
+                   bc.generate_invoice                 AS "process_gel"
+            FROM customer_all ca, sysadm.doc_all_[%CYCLE%] da,
+                 cai.nxt_ar_bscs_bill_customers bc
+            WHERE ca.prgcode &lt;&gt; 3
+              AND NVL(ca.csbillmedium,1) &lt;&gt; 3
+              AND ca.customer_id = da.customer_id
+              AND da.customer_id = bc.bscs_customer_id
+              --
+              -- EHO: nao contemplar o ciclo se o mesmo for diferente de 07 e 08 (por apresentarem a mesma data de corte)
+              --
+              AND ((bc.cycle_code = '[%CYCLE%]' and bc.cycle_code in ('07','08')) or (bc.cycle_code not in ('07','08')))
+              -- 
+              AND (bc.bill_suppress = 'N' OR bc.generate_invoice = 'S')
+              AND bc.date_created = da.date_created
+            GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                     ca.costcenter_id, bc.cycle_code, 
+                     bc.bill_suppress, bc.generate_invoice    
+        </sql:query>
+    </sql:statement>
+
+    <sql:statement name="AllNoEmployees">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   bc.cycle_code                       AS "cycle",
+                   bc.bill_suppress                    AS "ignore_timm",
+                   bc.generate_invoice                 AS "process_gel"
+            FROM customer_all ca, sysadm.doc_all_[%CYCLE%] da,
+                 cai.nxt_ar_bscs_bill_customers bc
+            WHERE ca.prgcode &lt;&gt; 3
+              AND ca.customer_id = da.customer_id
+              AND da.customer_id = bc.bscs_customer_id
+              --
+              -- EHO: nao contemplar o ciclo se o mesmo for diferente de 07 e 08 (por apresentarem a mesma data de corte)
+              --
+              AND ((bc.cycle_code = '[%CYCLE%]' and bc.cycle_code in ('07','08')) or (bc.cycle_code not in ('07','08')))
+              -- 
+              AND (bc.bill_suppress = 'N' OR bc.generate_invoice = 'S')
+              AND bc.date_created = da.date_created
+            GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                     ca.costcenter_id, bc.cycle_code, 
+                     bc.bill_suppress, bc.generate_invoice      
+        </sql:query>
+    </sql:statement>
+
+    <sql:statement name="AllCustomersBraille">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   bc.cycle_code                       AS "cycle",
+                   bc.bill_suppress                    AS "ignore_timm",
+                   bc.generate_invoice                 AS "process_gel",
+                   null                                AS "cd_federal_tax", 
+                   ca.costcenter_id                    AS "cd_market"
+            FROM customer_all ca, sysadm.doc_all_[%CYCLE%] da,
+                 cai.nxt_ar_bscs_bill_customers bc
+            WHERE ca.csbillmedium = 5 
+              and ca.costcenter_id in (11,27)
+              AND ca.customer_id = da.customer_id
+              AND da.customer_id = bc.bscs_customer_id
+              --
+              -- EHO: nao contemplar o ciclo se o mesmo for diferente de 07 e 08 (por apresentarem a mesma data de corte)
+              --
+              AND ((bc.cycle_code = '[%CYCLE%]' and bc.cycle_code in ('07','08')) or (bc.cycle_code not in ('07','08')))
+              -- 
+              AND bc.bill_suppress = 'N' 
+              AND bc.date_created = da.date_created
+            GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                     ca.costcenter_id, bc.cycle_code, 
+                     bc.bill_suppress, bc.generate_invoice
+        </sql:query>
+    </sql:statement>
+    
+    <sql:statement name="AllCustomersFebraban">
+        <sql:query>
+            SELECT --+leading(ca)
+                   ca.customer_id                      AS "customer_id",
+                   ca.custcode                         AS "custcode",
+                   sum(da.document_size)               AS "timm_size",
+                   TO_CHAR(SYSDATE, 'yyyymmdd.hhmmss') AS "timestamp",
+                   to_char(da.date_created, 'yyyy')    AS "year",
+                   to_char(da.date_created, 'mm')      AS "month",
+                   ca.costcenter_id                    AS "costcenter_id",
+                   bc.cycle_code                       AS "cycle",
+                   bc.bill_suppress                    AS "ignore_timm",
+                   bc.generate_invoice                 AS "process_gel",
+                   ei.cd_federal_tax                   AS "cd_federal_tax", 
+                   ei.cd_market                        AS "cd_market"
+            FROM customer_all ca, sysadm.doc_all_[%CYCLE%] da,
+                 cai.nxt_ar_bscs_bill_customers bc, eiv.teiv_eletronic_invoice ei
+            WHERE ca.csbillmedium BETWEEN 3 AND 4
+              AND ca.customer_id = da.customer_id
+              AND da.customer_id = bc.bscs_customer_id
+              AND ei.id_customer = da.customer_id
+              --
+              -- EHO: nao contemplar o ciclo se o mesmo for diferente de 07 e 08 (por apresentarem a mesma data de corte)
+              --
+              AND ((bc.cycle_code = '[%CYCLE%]' and bc.cycle_code in ('07','08')) or (bc.cycle_code not in ('07','08')))
+              -- 
+              AND bc.bill_suppress = 'N' -- nÃ£o considerar flag do gel para febraban
+              AND bc.date_created = da.date_created
+            GROUP BY ca.customer_id, ca.custcode, da.date_created, 
+                     ca.costcenter_id, bc.cycle_code, 
+                     bc.bill_suppress, bc.generate_invoice,
+                     ei.cd_federal_tax, ei.cd_market
+        </sql:query>
+    </sql:statement>
+    
+    <sql:statement name="TIMMDocument">
+        <sql:query>
+            SELECT document AS "document"
+            FROM sysadm.doc_all_[%CYCLE%] 
+            WHERE customer_id = ?
+            ORDER BY type_id
+        </sql:query>
+        <sql:param index="1" type="Integer"/>
+    </sql:statement>
+
+	<sql:statement name="DeviceId">
+        <sql:query>
+            SELECT co_id       AS "contract_id",
+                   cd_seqno    AS "seq_num",
+                   cd_status   AS "status",
+                   cd_sm_num   AS "sm_num",
+                   cd_port_num AS "port_num"
+            FROM contr_devices
+            WHERE co_id = ? AND cd_seqno IN ( SELECT MAX(cd_seqno)
+                                              FROM contr_devices
+                                              WHERE co_id = ?)
+	    </sql:query>
+	    <sql:param index="1" type="Integer"/>
+	    <sql:param index="2" type="Integer"/>
+	</sql:statement>
+
+    <sql:statement name="SaldoAnterior">
+        <sql:query>
+            SELECT PREV_BALANCE, 
+                   PAGTOS_EFET,
+                   CSCURBALANCE
+            FROM prod.saldos
+            WHERE custcode = ?
+        </sql:query>
+        <sql:param index="1" type="String"/>
+    </sql:statement>
+
+    <sql:statement name="CGIPrefix">
+	<sql:query>
+	   SELECT  CD_ZONE AS "ZOCODE", 
+	           CD_PREFIX AS "PREFIX",
+	           DS_ZONE AS "DES", 
+	           CD_CGI AS "CGI" 
+	   FROM BIT.TBIT_CGI_PREFIX
+	   ORDER BY CD_ZONE
+	</sql:query>
+    </sql:statement>
+    
+    <sql:statement name="Ohxact">
+        <sql:query>
+          SELECT OHXACT AS "OHXACT" 
+          FROM sysadm.doc_all_[%CYCLE%] da
+          WHERE customer_id = ? AND type_id = 1
+        </sql:query>
+        <sql:param index="1" type="String"/>
+    </sql:statement>
+    
+    <sql:statement name="Messages">
+        <sql:query>
+            SELECT DISTINCT textid AS "id",
+                            text   AS "message"
+            FROM bluiftab
+        </sql:query>
+    </sql:statement>
+
+    </sql:statements>
+  </sql:configuration>
+</root>
+

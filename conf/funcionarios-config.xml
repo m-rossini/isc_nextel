@@ -1,0 +1,158 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<data-aware>
+  <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="SOCKET" class="org.apache.log4j.net.SocketAppender">
+      <param name="Threshold" value="DEBUG" />
+      <param name="Port" value="4445" />
+      <param name="RemoteHost" value="10.11.108.71" />
+      <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%t] %m%n" />
+      </layout>
+    </appender>
+    <appender name="FILE" class="biz.minaret.log4j.DatedFileAppender">
+      <param name="Threshold" value="info" />
+      <param name="Directory" value="[%WORK_DIR%]/log" />
+      <param name="Prefix" value="func-" />
+      <param name="Suffix" value=".log" />
+      <param name="Append" value="true" />
+      <layout class="org.apache.log4j.PatternLayout">
+        <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%t] %m%n" />
+      </layout>
+    </appender>
+    <root>
+      <priority value="info" />
+      <appender-ref ref="FILE" />
+      <!-- appender-ref ref="SOCKET" / -->
+    </root>
+  </log4j:configuration>
+
+  <management:configuration xmlns:management="http://www.auster.com.br/dware/management/">
+    <management:register use-default="false" class-name="br.com.auster.dware.monitor.RegisterMBeanMX4J"
+      ip-address="localhost" tcp-port="[%MONITOR_PORT%]" jndi-name="jmxconnector" />
+  </management:configuration>
+
+  <dw:configuration name="invoice" xmlns:dw="http://www.auster.com.br/dware/">
+
+    <dw:mbean mbean-component="dware" mbean-type="engine"
+      mbean-class-name="br.com.auster.dware.monitor.dware.JMXDWare" pass-reference="true" />
+
+    <dw:graph-manager>
+      <dw:mbean mbean-component="GraphManager"
+        mbean-class-name="br.com.auster.dware.monitor.manager.JMXGraphManager"
+        pass-reference="true" />
+
+      <dw:mbean mbean-component="graph"
+        mbean-class-name="br.com.auster.dware.monitor.graph.JMXGraph" pass-reference="true" />
+
+      <dw:local-graph-group name="local-1" max-graphs="6" max-weight="-1">
+        <dw:mbean mbean-component="graph-group" mbean-type="local-1"
+          mbean-class-name="br.com.auster.dware.monitor.manager.JMXPriorityWishGraphGroup"
+          pass-reference="true" />
+      </dw:local-graph-group>
+<!-- 
+      <dw:local-graph-group name="local-2" max-graphs="2" max-weight="-1">
+        <dw:mbean mbean-component="graph-group" mbean-type="local-2"
+          mbean-class-name="br.com.auster.dware.monitor.manager.JMXPriorityWishGraphGroup"
+          pass-reference="true" />
+      </dw:local-graph-group>
+-->
+
+      <dw:request-forwarder class-name="br.com.auster.dware.manager.PriorityQueueReqForwarder" />
+      
+      <dw:checkpoint class-name="br.com.auster.dware.manager.checkpoint.FileCheckpoint" 
+                     file-name="[%WORK_DIR%]/func-checkpoint.txt"
+                     max-req-fails="2" requeue-sleep-milis="5000"/>
+    </dw:graph-manager>
+
+    <dw:graph-design>
+
+    <dw:filter name="InputFromFile" class-name="br.com.auster.dware.filter.InputFromFile">
+        <config buffer-size="262244"/>
+        <dw:connect-to name="Invoice2XML" />
+      </dw:filter>
+
+      <dw:filter name="Invoice2XML" class-name="br.com.auster.dware.filter.XMLReaderFilter">
+        <dw:config/>
+        <dw:connect-to name="XML2TXT" />
+      </dw:filter>
+   
+      <dw:filter name="XML2TXT" class-name="br.com.auster.dware.filter.XSLFilter">
+        <dw:config>
+          <dw:xsl-file path="conf/txt/nextel_fatura.xsl" encrypted="false"/>
+        </dw:config>
+        <dw:connect-to name="TXT2File"/>
+      </dw:filter>
+
+      <dw:filter name="TXT2File" class-name="br.com.auster.dware.filter.OutputToFile">
+        <dw:config prefix="[%OUTPUT_DIR%]/funcionarios/" suffix=".txt">
+          <dw:filename>
+            <dw:token>
+              <dw:insert-request-field name="cycle" />
+            </dw:token>
+            <dw:token>/</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="year" />
+            </dw:token>
+            <dw:token>/</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="month" />
+            </dw:token>
+            <dw:token>/</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="costCenter" />
+            </dw:token>
+            <dw:token>/CUST</dw:token>
+            <dw:token>
+              <dw:insert-request-field name="account" />
+            </dw:token>
+          </dw:filename>
+        </dw:config>
+      </dw:filter>
+    </dw:graph-design>
+  </dw:configuration>
+
+  <requests:configuration xmlns:requests="http://www.auster.com.br/dware/requests/">
+    <!-- error-listener class-name="br.com.auster.dware.request.DefaultRequestErrorListener"/ -->
+    <builder-chain name="chain">
+      <builder name="sql" 
+               class-name="br.com.auster.nextel.isc.request.sql.SQLRequestBuilder">
+        <config>
+          <database pool-name="bscs" sql-name="AllEmployees" />
+          <requests>
+            <weight column="3" />
+            <id column="1" />
+            <fields> 
+              <field name="account"    column="1" />
+              <field name="custCode"   column="2" />
+              <field name="timestamp"  column="4" />
+              <field name="year"       column="5" />
+              <field name="month"      column="6" />
+              <field name="costCenter" column="7" />
+              <field name="cycle"      column="8" />
+            </fields>
+          </requests>       
+        </config>
+      </builder>
+      <builder name="builder" 
+               class-name="br.com.auster.nextel.isc.request.file.BGHFileRequestBuilder"
+               rollover-attributes="true">
+	      <config request-id-pattern="^CUST(.+?)\.xml$">
+		      <static-attributes>
+		      	<static name="mode" type="java.lang.String">fcn</static>
+		      </static-attributes>
+	      </config>
+	      <compare-results to-builder="sql" direction="right"/>
+      </builder>  
+    </builder-chain>
+  </requests:configuration> 
+  
+  <sql:configuration xmlns:sql="http://www.auster.com.br/common/sql/">
+    <sql:database name="bscs">
+      <sql:statements path="[%WORK_DIR%]/conf/sql/bscs-statements.xml"/>
+    </sql:database>
+    <sql:database name="mibas">
+      <sql:statements path="[%WORK_DIR%]/conf/sql/mibas-statements.xml"/>
+    </sql:database>
+  </sql:configuration> 
+                     
+</data-aware>

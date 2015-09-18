@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="auster-isc-nextel" default="proguard" basedir=".">
+
+    <property file="project.properties"/>
+    <taskdef resource="proguard/ant/task.properties" classpath="${proguard.proguard}"/>
+
+    <!-- Obfuscated Jar target -->
+    <target name="proguard">
+       <delete file="${target.home}/${maven.jar.temp.name}"/>
+       <proguard>
+          <!-- Input files that will be included in the obfuscated jar -->
+	  
+          -injars "${maven.jar.name}"(ready.rss,br/com/auster/nextel/isc/Bootstrap.class,br/com/auster/nextel/isc/BootstrapDevel.class)
+          -injars "${auster.auster-commons-base}"(!br/com/auster/**/test/**,!br/com/auster/common/security/ResourceReady.class,!br/com/auster/common/security/Encryptor.class,!br/com/auster/common/security/Lock*.class,!xsl/**,!br/com/auster/common/rules/**)
+          -injars "${auster.data-aware}"(!br/com/auster/**/test/**)
+          -injars "${auster.udd}"(!br/com/auster/**/test/**)
+          
+          <!-- Output file -->
+          -outjars "${maven.build.dir}/${maven.jar.temp.name}-temp.jar"
+          
+          -libraryjars "${maven.jar.name}"(!br/com/auster/nextel/isc/Bootstrap.class,!br/com/auster/nextel/isc/BootstrapDevel.class,!br/com/auster/nextel/isc/TIMMLoader.class)
+          -libraryjars "${auster.auster-commons-base}"(br/com/auster/common/security/ResourceReady.class)
+          -libraryjars "${ant.ant}"
+          -libraryjars "${commons-cli.commons-cli}"
+          -libraryjars "${commons-collections.commons-collections}"
+          -libraryjars "${commons-io.commons-io}"
+          -libraryjars "${commons-lang.commons-lang}"
+          -libraryjars "${log4j.log4j}"
+          -libraryjars "${trove.trove}"
+          -libraryjars "${xalan.xalan}"
+          -libraryjars "${java.home}/lib/rt.jar"
+	  
+          <!-- proguard debugging files/options -->
+          <!-- -printseeds proguard_seeds.txt -->
+          <!-- -printusage proguard_deadcode.txt -->
+          -verbose
+
+          <!-- execution settings -->
+          -dontoptimize
+          -overloadaggressively
+
+          <!-- provides useful stack traces -->
+          -printmapping .proguard.mapping
+          <!-- -applymapping .proguard.mapping -->
+          -renamesourcefileattribute SourceFile
+          -keepattributes InnerClasses,SourceFile,LineNumberTable,Deprecated,Signature
+
+          <!-- ################################################## -->
+          <!-- # SHARED KEEPS                                   # -->
+          <!-- ################################################## -->
+          
+          <!-- Resource Bundles -->
+          -keepclasseswithmembers class **.res.*
+          
+
+          <!-- ################################################## -->
+          <!-- # COMMONS                                        # -->
+          <!-- ################################################## -->
+       	
+       	  -keep public class br.com.auster.common.xml.* {
+       	      public &lt;methods&gt;;
+       	  }
+       	  -keep public class br.com.auster.common.xml.sax.* {
+       	      public &lt;methods&gt;;
+       	  }
+       	  -keep public class br.com.auster.common.sql.* {
+       	      public &lt;methods&gt;;
+       	  }
+       	  -keep public class br.com.auster.common.sql.param.* {
+       	      public &lt;methods&gt;;
+       	  }
+     	  -keep public class br.com.auster.common.log.* {
+     	      public &lt;methods&gt;;
+     	  }
+          -keep public class br.com.auster.common.util.* {
+     	      public &lt;methods&gt;;
+     	  }
+          -keep public class br.com.auster.common.text.* {
+   	          &lt;methods&gt;;
+   	      }
+          -keep public class br.com.auster.common.lang.* {
+              public &lt;methods&gt;;
+          }
+          -keep public class br.com.auster.common.io.* {
+              public &lt;methods&gt;;
+          }
+
+          <!-- XSL Extensions -->
+          -keep public class **.xsl.extensions.* {
+              public &lt;methods&gt;;
+          }
+
+          <!-- Reference Tables -->
+          -keep interface br.com.auster.common.cache.ExternalTableManager
+          -keep public class * implements br.com.auster.common.cache.ExternalTableManager {
+              public &lt;methods&gt;;
+          }
+
+          <!-- Encryptor 
+          -keep class br.com.auster.common.security.Encryptor {
+              public static void main(java.lang.String[]);
+          } -->
+
+          <!-- XSL Transformer -->
+          -keep class br.com.auster.common.xsl.XSLTransformer {
+              public static void main(java.lang.String[]);
+          }
+
+          <!-- ################################################## -->
+          <!-- # UDD                                            # -->
+          <!-- ################################################## -->
+          
+          <!-- UDD readers -->
+          -keep class * extends br.com.auster.udd.reader.FlatNIOReader {
+              public &lt;methods&gt;;
+          }
+
+          <!-- UDD Handlers -->
+          -keep class * extends br.com.auster.udd.reader.TaggedFileReader {
+              &lt;init&gt;(org.w3c.dom.Element);
+              public &lt;methods&gt;;
+          }
+       	
+       	  -keep class br.com.auster.udd.node.UDDSimpleAttributeFormatter {
+       	      &lt;methods&gt;;
+       	      &lt;fields&gt;;
+       	  }
+          
+
+          <!-- ################################################## -->
+          <!-- # DATA-A-WARE                                    # -->
+          <!-- ################################################## -->
+
+       	  -keep interface br.com.auster.dware.**.*
+       	  -keep class br.com.auster.dware.**.* {
+        	protected public &lt;methods&gt;;
+        	protected public &lt;fields&gt;;
+ 	  	  }
+          
+         <!-- JMX Monitoring -->
+         -keep interface br.com.auster.dware.monitor.RegisterMBeanHandler {
+       	     public &lt;methods&gt;;
+       	 }
+         -keep public class * implements br.com.auster.dware.monitor.RegisterMBeanHandler {
+             public &lt;init&gt;(**);
+             public &lt;methods&gt;;
+         }
+         -keep interface br.com.auster.dware.monitor.*MBean {
+  	         public &lt;methods&gt;;
+  	     }
+         -keep public class * implements br.com.auster.dware.monitor.*MBean {
+             public &lt;init&gt;(**);
+       	     public &lt;methods&gt;;
+         }
+         -keep interface br.com.auster.dware.monitor.**.*MBean {
+  	         public &lt;methods&gt;;
+  	     }
+         -keep public class * implements br.com.auster.dware.monitor.**.*MBean {
+             public &lt;init&gt;(**);
+       	     public &lt;methods&gt;;
+         }
+
+          <!-- ################################################## -->
+          <!-- # NEXTEL ISC                                     # -->
+          <!-- ################################################## -->       
+       	
+     	  <!-- Bootstrap main method -->
+     	  -keep class br.com.auster.nextel.isc.Bootstrap {
+            public static void main(java.lang.String[]);
+     	  } 
+     	  -keep class br.com.auster.nextel.isc.BootstrapDevel {
+            public static void main(java.lang.String[]);
+     	  } 
+
+        </proguard>
+
+        <jar destfile="${maven.build.dir}/${maven.jar.temp.name}.jar">
+           <zipfileset src="${maven.build.dir}/${maven.jar.temp.name}-temp.jar"/>
+           <zipfileset src="${auster.auster-commons-base}"
+                       includes="br/com/auster/common/security/ResourceReady.class"/>
+        </jar>
+        <delete file="${maven.build.dir}/${maven.jar.temp.name}-temp.jar"/>
+    </target>
+  
+</project> 

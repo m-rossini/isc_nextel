@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <region code="RJ">
+        <costCenter id="1"  jurdicCode="SOD" city="Sorocaba"              state="SP" hasSpecialRule="Y"/>
+        <costCenter id="2"  jurdicCode="RIO" city="Rio de Janeiro Cidade" state="RJ" hasSpecialRule="Y"/>
+        <costCenter id="3"  jurdicCode="BSB" city="Brasilia"              state="DF" hasSpecialRule="Y"/>
+        <costCenter id="4"  jurdicCode="BHZ" city="Belo Horizonte"        state="MG" hasSpecialRule="Y"/>
+        <costCenter id="5"  jurdicCode="RJN" city="Rio Int. Norte"        state="RJ" hasSpecialRule="Y"/>
+        <costCenter id="6"  jurdicCode="RJS" city="Rio Int. Sul"          state="RJ" hasSpecialRule="Y"/>
+        <costCenter id="7"  jurdicCode="SAO" city="Sao Paulo Cidade"      state="SP" hasSpecialRule="Y"/>
+        <costCenter id="8"  jurdicCode="CPS" city="Campinas"              state="SP" hasSpecialRule="Y"/>
+        <costCenter id="9"  jurdicCode="STS" city="Santos"                state="SP" hasSpecialRule="Y"/>
+        <costCenter id="10" jurdicCode="SJC" city="Sao Jose dos Campos"   state="SP" hasSpecialRule="Y"/>
+        <costCenter id="11" jurdicCode="CWB" city="Curitiba"              state="PR" hasSpecialRule="Y"/>
+        <costCenter id="12" jurdicCode="AJU" city="Aracaju"               state="SE" hasSpecialRule="Y"/>
+        <costCenter id="13" jurdicCode="FLN" city="Florianopolis"         state="SC" hasSpecialRule="Y"/>
+        <costCenter id="14" jurdicCode="FOR" city="Fortaleza"             state="CE" hasSpecialRule="N"/>
+        <costCenter id="15" jurdicCode="GYN" city="Goiania"               state="GO" hasSpecialRule="Y"/>
+        <costCenter id="16" jurdicCode="POA" city="Porto Alegre"          state="RS" hasSpecialRule="N"/>
+        <costCenter id="17" jurdicCode="REC" city="Recife"                state="PE" hasSpecialRule="Y"/>
+        <costCenter id="18" jurdicCode="RAO" city="Ribeirao Preto"        state="SP" hasSpecialRule="Y"/>
+        <costCenter id="19" jurdicCode="SSA" city="Salvador"              state="BH" hasSpecialRule="Y"/>
+        <costCenter id="20" jurdicCode="UDI" city="Uberlandia"            state="MG" hasSpecialRule="Y"/>
+        <costCenter id="21" jurdicCode="GYN" city="Goiania"               state="GO" hasSpecialRule="Y"/>
+        <costCenter id="22" jurdicCode="JVE" city="Joinville"             state="SC" hasSpecialRule="Y"/>        
+        <costCenter id="23" jurdicCode="FLN" city="Florianopolis"         state="SC" hasSpecialRule="Y"/>                
+        <costCenter id="24" jurdicCode="RAO" city="Ribeirao Preto"        state="SP" hasSpecialRule="Y"/> 
+        <costCenter id="25" jurdicCode="UDI" city="Uberlandia"            state="MG" hasSpecialRule="Y"/>   
+        <costCenter id="26" jurdicCode="POA" city="Porto Alegre"          state="RS" hasSpecialRule="N"/> 
+        <costCenter id="27" jurdicCode="PGA" city="Ponta Grossa"          state="PR" hasSpecialRule="Y"/>                        
+        <costCenter id="28" jurdicCode="SJR" city="Sao Jose do Rio Preto" state="SP" hasSpecialRule="Y"/>        
+    </region>
+</document>
